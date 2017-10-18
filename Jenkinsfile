@@ -67,6 +67,9 @@ def get_pipeline(image_key) {
                         --settings build_type=Release \
                         --options shared=True \
                         --build=missing
+                    conan install cmake_installer/1.0@conan/stable \
+                        --options version="3.9.0" \
+                        --build=missing
                 \""""
             }
 
