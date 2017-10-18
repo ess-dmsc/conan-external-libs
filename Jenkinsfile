@@ -2,7 +2,6 @@ project = "conan-external-libs"
 
 conan_remote = "ess-dmsc-local"
 conan_user = "ess-dmsc"
-conan_pkg_channel = "testing"
 
 images = [
     'centos': [
