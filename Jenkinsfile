@@ -60,8 +60,14 @@ def get_pipeline(image_key) {
 
             stage("${image_key}: Package") {
                 sh """docker exec ${container_name} ${custom_sh} -c \"
-                    conan install zlib/1.2.11@conan/stable --build=missing
-                    conan install gtest/1.8.0@conan/stable --build=missing
+                    conan install zlib/1.2.11@conan/stable \
+                        --settings build_type=Release \
+                        --options shared=False \
+                        --build=missing
+                    conan install gtest/1.8.0@conan/stable \
+                        --settings build_type=Release \
+                        --options shared=True \
+                        --build=missing
                 \""""
             }
 
