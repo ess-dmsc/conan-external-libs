@@ -84,8 +84,8 @@ def get_pipeline(image_key) {
                         --build=missing
                 \""""
 
-                // Boost does not build on CentOS with GCC 4.8.
-                if (image_key != 'centos') {
+                // Boost only builds on CentOS with GCC 6.3.
+                if (image_key == 'centos-gcc6') {
                     sh """docker exec ${container_name} ${custom_sh} -c \"
                         conan install Boost/1.64.0@conan/stable \
                             --settings build_type=Release \
