@@ -65,16 +65,38 @@ def get_pipeline(image_key) {
                 sh """docker exec ${container_name} ${custom_sh} -c \"
                     conan install zlib/1.2.11@conan/stable \
                         --settings build_type=Release \
-                        --options shared=False \
+                        --options zlib:shared=False \
+                        --build=missing
+                    conan install zlib/1.2.11@conan/stable \
+                        --settings build_type=Release \
+                        --options zlib:shared=True \
                         --build=missing
                     conan install gtest/1.8.0@conan/stable \
                         --settings build_type=Release \
-                        --options shared=True \
+                        --options gtest:shared=False \
+                        --build=missing
+                    conan install gtest/1.8.0@conan/stable \
+                        --settings build_type=Release \
+                        --options gtest:shared=True \
                         --build=missing
                     conan install cmake_installer/1.0@conan/stable \
-                        --options version="3.9.0" \
+                        --options cmake_installer:version="3.9.0" \
                         --build=missing
                 \""""
+
+                // Boost does not build on CentOS with GCC 4.8.
+                if (image_key != 'centos') {
+                    sh """docker exec ${container_name} ${custom_sh} -c \"
+                        conan install Boost/1.64.0@conan/stable \
+                            --settings build_type=Release \
+                            --options Boost:shared=False \
+                            --build=missing
+                        conan install Boost/1.64.0@conan/stable \
+                            --settings build_type=Release \
+                            --options Boost:shared=True \
+                            --build=missing
+                    \""""
+                }
             }
 
             stage("${image_key}: Upload") {
@@ -89,10 +111,11 @@ def get_pipeline(image_key) {
     }
 }
 
-node('docker') {
+// Temporarily hard code build node because of disk space limitations.
+node('docker && dmbuild03.dm.esss.dk') {
     def builders = [:]
 
-    // Delete workspace when build is done
+    // Delete workspace when build is done.
     cleanWs()
 
     dir("${project}") {
