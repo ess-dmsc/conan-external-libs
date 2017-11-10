@@ -87,21 +87,13 @@ def get_pipeline(image_key) {
                         --settings build_type=Release \
                         --options gtest:shared=True \
                         --build=missing
-                    conan install cmake_installer/1.0@conan/stable \
-                        --options cmake_installer:version="3.9.0" \
-                        --build=missing
                 \""""
 
-                // Boost only builds on CentOS with GCC 6.3.
-                if (image_key == 'centos-gcc6') {
+                // There is only one cmake_installer package.
+                if (image_key == 'centos') {
                     sh """docker exec ${container_name} ${custom_sh} -c \"
-                        conan install Boost/1.64.0@conan/stable \
-                            --settings build_type=Release \
-                            --options Boost:shared=False \
-                            --build=missing
-                        conan install Boost/1.64.0@conan/stable \
-                            --settings build_type=Release \
-                            --options Boost:shared=True \
+                        conan install cmake_installer/1.0@conan/stable \
+                            --options cmake_installer:version="3.9.0" \
                             --build=missing
                     \""""
                 }
