@@ -75,14 +75,20 @@ def get_pipeline(image_key) {
                         --settings build_type=Release \
                         --options zlib:shared=False \
                         --build=missing
+                \""""
+                sh """docker exec ${container_name} ${custom_sh} -c \"
                     conan install zlib/1.2.11@conan/stable \
                         --settings build_type=Release \
                         --options zlib:shared=True \
                         --build=missing
+                \""""
+                sh """docker exec ${container_name} ${custom_sh} -c \"
                     conan install gtest/1.8.0@conan/stable \
                         --settings build_type=Release \
                         --options gtest:shared=False \
                         --build=missing
+                \""""
+                sh """docker exec ${container_name} ${custom_sh} -c \"
                     conan install gtest/1.8.0@conan/stable \
                         --settings build_type=Release \
                         --options gtest:shared=True \
