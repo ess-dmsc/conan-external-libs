@@ -117,8 +117,7 @@ def get_pipeline(image_key) {
     }
 }
 
-// Temporarily hard code build node because of disk space limitations.
-node('docker && dmbuild03.dm.esss.dk') {
+node('docker') {
     def builders = [:]
 
     // Delete workspace when build is done.
