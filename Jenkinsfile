@@ -178,10 +178,7 @@ def get_osx_pipeline() {
         }  // stage
 
         stage("OSX: Upload") {
-          sh "upload_conan_package.sh conanfile.py \
-                ${conan_remote} \
-                ${conan_user} \
-                ${conan_pkg_channel}"
+          sh "conan upload --confirm --all --remote ${conan_remote} '*'"
         }
       }
     }  // node
