@@ -190,12 +190,10 @@ node {
   checkout scm
 
   def builders = [:]
-/*
   for (x in images.keySet()) {
     def image_key = x
     builders[image_key] = get_pipeline(image_key)
   }
-*/
   builders['MacOSX'] = get_osx_pipeline()
   parallel builders
 
