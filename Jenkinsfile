@@ -12,12 +12,16 @@ images = [
     'name': 'essdmscdm/centos-gcc6-build-node:0.3.4',
     'sh': '/usr/bin/scl enable rh-python35 devtoolset-6 -- /bin/bash'
   ],
-  'debian': [
-  'name': 'essdmscdm/debian-build-node:0.1.1',
-  'sh': 'sh'
-  ],
   'fedora': [
     'name': 'essdmscdm/fedora-build-node:0.4.2',
+    'sh': 'sh'
+  ],
+  'debian': [
+    'name': 'essdmscdm/debian-build-node:0.1.1',
+    'sh': 'sh'
+  ],
+  'ubuntu1604': [
+    'name': 'essdmscdm/ubuntu16.04-build-node:0.0.2',
     'sh': 'sh'
   ],
   'ubuntu1710': [
