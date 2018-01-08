@@ -77,6 +77,10 @@ def get_pipeline(image_key) {
                 > /dev/null
             \""""
           }  // withCredentials
+          sh """docker exec ${container_name} ${custom_sh} -c \"
+            conan remote add \
+            bincrafters https://api.bintray.com/conan/bincrafters/public-conan
+          \""""
         }  // stage
 
         stage("${image_key}: Package") {
@@ -91,6 +95,11 @@ def get_pipeline(image_key) {
             conan install zlib/1.2.11@conan/stable \
               --settings build_type=Release \
               --options zlib:shared=True \
+              --build=missing
+          \""""
+          
+          sh """docker exec ${container_name} ${custom_sh} -c \"
+            conan install asio/1.11.0@bincrafters/stable \
               --build=missing
           \""""
 
