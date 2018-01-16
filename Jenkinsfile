@@ -4,28 +4,28 @@ conan_remote = "ess-dmsc-local"
 conan_user = "ess-dmsc"
 
 images = [
-  'centos': [
-    'name': 'essdmscdm/centos-build-node:0.9.4',
+  'centos7': [
+    'name': 'essdmscdm/centos7-build-node:1.0.1',
     'sh': 'sh'
   ],
-  'centos-gcc6': [
-    'name': 'essdmscdm/centos-gcc6-build-node:0.3.4',
+  'centos7-gcc6': [
+    'name': 'essdmscdm/centos7-gcc6-build-node:1.0.0',
     'sh': '/usr/bin/scl enable rh-python35 devtoolset-6 -- /bin/bash'
   ],
-  'fedora': [
-    'name': 'essdmscdm/fedora-build-node:0.4.2',
-    'sh': 'sh'
+  'debian9': [
+  'name': 'essdmscdm/debian9-build-node:1.0.0',
+  'sh': 'sh'
   ],
-  'debian': [
-    'name': 'essdmscdm/debian-build-node:0.1.1',
+  'fedora25': [
+    'name': 'essdmscdm/fedora25-build-node:1.0.0',
     'sh': 'sh'
   ],
   'ubuntu1604': [
-    'name': 'essdmscdm/ubuntu16.04-build-node:0.0.2',
+    'name': 'essdmscdm/ubuntu16.04-build-node:1.0.0',
     'sh': 'sh'
   ],
   'ubuntu1710': [
-    'name': 'essdmscdm/ubuntu17.10-build-node:0.0.3',
+    'name': 'essdmscdm/ubuntu17.10-build-node:1.0.0',
     'sh': 'sh'
   ]
 ]
@@ -77,10 +77,6 @@ def get_pipeline(image_key) {
                 > /dev/null
             \""""
           }  // withCredentials
-          sh """docker exec ${container_name} ${custom_sh} -c \"
-            conan remote add \
-            bincrafters https://api.bintray.com/conan/bincrafters/public-conan
-          \""""
         }  // stage
 
         stage("${image_key}: Package") {
@@ -88,40 +84,40 @@ def get_pipeline(image_key) {
             conan install zlib/1.2.11@conan/stable \
               --settings build_type=Release \
               --options zlib:shared=False \
-              --build=missing
+              --build=outdated
           \""""
 
           sh """docker exec ${container_name} ${custom_sh} -c \"
             conan install zlib/1.2.11@conan/stable \
               --settings build_type=Release \
               --options zlib:shared=True \
-              --build=missing
+              --build=outdated
           \""""
 
           sh """docker exec ${container_name} ${custom_sh} -c \"
             conan install asio/1.11.0@bincrafters/stable \
-              --build=missing
+              --build=outdated
           \""""
 
           sh """docker exec ${container_name} ${custom_sh} -c \"
             conan install gtest/1.8.0@conan/stable \
               --settings build_type=Release \
               --options gtest:shared=False \
-              --build=missing
+              --build=outdated
           \""""
 
           sh """docker exec ${container_name} ${custom_sh} -c \"
             conan install gtest/1.8.0@conan/stable \
               --settings build_type=Release \
               --options gtest:shared=True \
-              --build=missing
+              --build=outdated
           \""""
 
           // There is only one cmake_installer package.
           if (image_key == 'centos') {
             sh """docker exec ${container_name} ${custom_sh} -c \"
               conan install cmake_installer/3.10.0@conan/stable \
-                --build=missing
+                --build=outdated
             \""""
           }
         }  // stage
@@ -139,16 +135,16 @@ def get_pipeline(image_key) {
   }  // return
 }  // def
 
-def get_osx_pipeline() {
+def get_macos_pipeline() {
   return {
     node('macos') {
       cleanWs()
       dir("${project}") {
-        stage("OSX: Checkout") {
+        stage("macOS: Checkout") {
           checkout scm
         }  // stage
 
-        stage("OSX: Conan setup") {
+        stage("macOS: Conan setup") {
           withCredentials([
             string(
               credentialsId: 'local-conan-server-password',
@@ -163,29 +159,29 @@ def get_osx_pipeline() {
           }  // withCredentials
         }  // stage
 
-        stage("OSX: Package") {
+        stage("macOS: Package") {
           sh "conan install zlib/1.2.11@conan/stable \
               --settings build_type=Release \
               --options zlib:shared=False \
-              --build=missing"
+              --build=outdated"
 
           sh "conan install zlib/1.2.11@conan/stable \
               --settings build_type=Release \
               --options zlib:shared=True \
-              --build=missing"
+              --build=outdated"
 
           sh "conan install gtest/1.8.0@conan/stable \
               --settings build_type=Release \
               --options gtest:shared=False \
-              --build=missing"
+              --build=outdated"
 
           sh "conan install gtest/1.8.0@conan/stable \
               --settings build_type=Release \
               --options gtest:shared=True \
-              --build=missing"
+              --build=outdated"
         }  // stage
 
-        stage("OSX: Upload") {
+        stage("macOS: Upload") {
           sh "conan upload --confirm --all --remote ${conan_remote} \
             zlib/1.2.11@conan/stable \
             gtest/1.8.0@conan/stable"
@@ -204,7 +200,7 @@ node {
     def image_key = x
     builders[image_key] = get_pipeline(image_key)
   }
-  builders['MacOSX'] = get_osx_pipeline()
+  builders['macOS'] = get_macos_pipeline()
   parallel builders
 
   // Delete workspace when build is done.
