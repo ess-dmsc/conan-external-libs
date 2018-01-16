@@ -97,7 +97,7 @@ def get_pipeline(image_key) {
               --options zlib:shared=True \
               --build=missing
           \""""
-          
+
           sh """docker exec ${container_name} ${custom_sh} -c \"
             conan install asio/1.11.0@bincrafters/stable \
               --build=missing
@@ -120,8 +120,7 @@ def get_pipeline(image_key) {
           // There is only one cmake_installer package.
           if (image_key == 'centos') {
             sh """docker exec ${container_name} ${custom_sh} -c \"
-              conan install cmake_installer/1.0@conan/stable \
-                --options cmake_installer:version="3.9.0" \
+              conan install cmake_installer/3.10.0@conan/stable \
                 --build=missing
             \""""
           }
