@@ -186,7 +186,9 @@ def get_osx_pipeline() {
         }  // stage
 
         stage("OSX: Upload") {
-          sh "conan upload --confirm --all --remote ${conan_remote} '*'"
+          sh "conan upload --confirm --all --remote ${conan_remote} \
+            zlib/1.2.11@conan/stable \
+            gtest/1.8.0@conan/stable"
         }
       }
     }  // node
