@@ -114,7 +114,7 @@ def get_pipeline(image_key) {
           \""""
 
           // There is only one cmake_installer package.
-          if (image_key == 'centos') {
+          if (image_key == 'centos7') {
             sh """docker exec ${container_name} ${custom_sh} -c \"
               conan install cmake_installer/3.10.0@conan/stable \
                 --build=outdated
@@ -183,7 +183,9 @@ def get_macos_pipeline() {
 
         stage("macOS: Upload") {
           sh "conan upload --confirm --all --remote ${conan_remote} \
-            zlib/1.2.11@conan/stable \
+            zlib/1.2.11@conan/stable"
+
+          sh "conan upload --confirm --all --remote ${conan_remote} \
             gtest/1.8.0@conan/stable"
         }
       }
