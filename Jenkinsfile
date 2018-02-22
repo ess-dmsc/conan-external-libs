@@ -76,6 +76,12 @@ def get_pipeline(image_key) {
                 ${conan_user} \
                 > /dev/null
             \""""
+            
+            // temporary, until remote is added to container images
+            sh """docker exec ${container_name} ${custom_sh} -c \"
+              conan remote add \
+                vthiery https://api.bintray.com/conan/vthiery/conan-packages
+            \""""
           }  // withCredentials
         }  // stage
 
@@ -96,6 +102,11 @@ def get_pipeline(image_key) {
 
           sh """docker exec ${container_name} ${custom_sh} -c \"
             conan install asio/1.11.0@bincrafters/stable \
+              --build=outdated
+          \""""
+          
+          sh """docker exec ${container_name} ${custom_sh} -c \"
+            conan install jsonformoderncpp/3.1.0@vthiery/stable \
               --build=outdated
           \""""
 
