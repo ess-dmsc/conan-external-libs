@@ -5,27 +5,23 @@ conan_user = "ess-dmsc"
 
 images = [
   'centos7': [
-    'name': 'essdmscdm/centos7-build-node:1.0.1',
+    'name': 'essdmscdm/centos7-build-node:2.1.0',
     'sh': 'sh'
   ],
   'centos7-gcc6': [
-    'name': 'essdmscdm/centos7-gcc6-build-node:1.0.0',
+    'name': 'essdmscdm/centos7-gcc6-build-node:3.0.0 ',
     'sh': '/usr/bin/scl enable rh-python35 devtoolset-6 -- /bin/bash'
   ],
   'debian9': [
-  'name': 'essdmscdm/debian9-build-node:1.0.0',
+  'name': 'essdmscdm/debian9-build-node:2.0.0',
   'sh': 'sh'
   ],
   'fedora25': [
-    'name': 'essdmscdm/fedora25-build-node:1.0.0',
+    'name': 'essdmscdm/fedora25-build-node:2.0.0',
     'sh': 'sh'
   ],
-  'ubuntu1604': [
-    'name': 'essdmscdm/ubuntu16.04-build-node:2.0.0',
-    'sh': 'sh'
-  ],
-  'ubuntu1710': [
-    'name': 'essdmscdm/ubuntu17.10-build-node:1.0.0',
+  'ubuntu1804': [
+    'name': 'essdmscdm/ubuntu18.04-build-node:1.0.0',
     'sh': 'sh'
   ]
 ]
@@ -76,12 +72,6 @@ def get_pipeline(image_key) {
                 ${conan_user} \
                 > /dev/null
             \""""
-            
-            // temporary, until remote is added to container images
-            sh """docker exec ${container_name} ${custom_sh} -c \"
-              conan remote add \
-                vthiery https://api.bintray.com/conan/vthiery/conan-packages
-            \""""
           }  // withCredentials
         }  // stage
 
@@ -104,7 +94,7 @@ def get_pipeline(image_key) {
             conan install asio/1.11.0@bincrafters/stable \
               --build=outdated
           \""""
-          
+
           sh """docker exec ${container_name} ${custom_sh} -c \"
             conan install jsonformoderncpp/3.1.0@vthiery/stable \
               --build=outdated
