@@ -86,6 +86,17 @@ def get_pipeline(image_key) {
             conan install asio/1.11.0@bincrafters/stable \
               --build=outdated
           \""""
+          
+          sh """docker exec ${container_name} ${custom_sh} -c \"
+            conan install cmake_findboost_modular/1.66.0@bincrafters/stable \
+              --build=outdated
+          \""""
+          
+          sh """docker exec ${container_name} ${custom_sh} -c \"
+            conan install boost_filesystem/1.66.0@bincrafters/stable \
+              --options boost_filesystem:shared=True \
+              --build=outdated
+          \""""
 
           sh """docker exec ${container_name} ${custom_sh} -c \"
             conan install jsonformoderncpp/3.1.0@vthiery/stable \
@@ -171,6 +182,15 @@ def get_macos_pipeline() {
           sh "conan install gtest/1.8.0@conan/stable \
               --settings build_type=Release \
               --options gtest:shared=True \
+              --build=outdated"
+          
+          sh "conan install cmake_findboost_modular/1.66.0@bincrafters/stable \
+              --settings build_type=Release \
+              --build=outdated"
+          
+          sh "conan install boost_filesystem/1.66.0@bincrafters/stable \
+              --settings build_type=Release \
+              --options boost_filesystem:shared=True \
               --build=outdated"
         }  // stage
 
