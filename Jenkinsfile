@@ -6,15 +6,15 @@ conan_user = "ess-dmsc"
 images = [
   'centos7': [
     'name': 'essdmscdm/centos7-build-node:3.0.0',
-    'sh': '/usr/bin/scl enable devtoolset-6 -- /bin/bash'
+    'sh': '/usr/bin/scl enable devtoolset-6 -- /bin/bash -e'
   ],
   'debian9': [
     'name': 'essdmscdm/debian9-build-node:2.0.0',
-    'sh': 'sh'
+    'sh': 'bash -e'
   ],
   'ubuntu1804': [
     'name': 'essdmscdm/ubuntu18.04-build-node:1.1.0',
-    'sh': 'sh'
+    'sh': 'bash -e'
   ]
 ]
 
@@ -57,7 +57,7 @@ def get_pipeline(image_key) {
               set +x
               conan remote add \
                 --insert 0 \
-                ${conan_remote} ${local_conan_server} && \
+                ${conan_remote} ${local_conan_server}
               conan user \
                 --password '${CONAN_PASSWORD}' \
                 --remote ${conan_remote} \
@@ -86,12 +86,12 @@ def get_pipeline(image_key) {
             conan install asio/1.11.0@bincrafters/stable \
               --build=outdated
           \""""
-          
+
           sh """docker exec ${container_name} ${custom_sh} -c \"
             conan install cmake_findboost_modular/1.66.0@bincrafters/stable \
               --build=outdated
           \""""
-          
+
           sh """docker exec ${container_name} ${custom_sh} -c \"
             conan install boost_filesystem/1.66.0@bincrafters/stable \
               --options boost_filesystem:shared=True \
@@ -183,11 +183,11 @@ def get_macos_pipeline() {
               --settings build_type=Release \
               --options gtest:shared=True \
               --build=outdated"
-          
+
           sh "conan install cmake_findboost_modular/1.66.0@bincrafters/stable \
               --settings build_type=Release \
               --build=outdated"
-          
+
           sh "conan install boost_filesystem/1.66.0@bincrafters/stable \
               --settings build_type=Release \
               --options boost_filesystem:shared=True \
