@@ -102,6 +102,11 @@ def get_pipeline(image_key) {
             conan install jsonformoderncpp/3.1.0@vthiery/stable \
               --build=outdated
           \""""
+          
+          sh """docker exec ${container_name} ${custom_sh} -c \"
+            conan install cli11/1.3.0@bincrafters/stable \
+              --build=outdated
+          \""""
 
           sh """docker exec ${container_name} ${custom_sh} -c \"
             conan install gtest/1.8.0@conan/stable \
@@ -191,6 +196,10 @@ def get_macos_pipeline() {
           sh "conan install boost_filesystem/1.66.0@bincrafters/stable \
               --settings build_type=Release \
               --options boost_filesystem:shared=True \
+              --build=outdated"
+          
+          sh "conan install cli11/1.3.0@bincrafters/stable \
+              --settings build_type=Release \
               --build=outdated"
         }  // stage
 
