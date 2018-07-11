@@ -88,13 +88,19 @@ def get_pipeline(image_key) {
           \""""
 
           sh """docker exec ${container_name} ${custom_sh} -c \"
-            conan install cmake_findboost_modular/1.66.0@bincrafters/stable \
+            conan install cmake_findboost_modular/1.65.1@bincrafters/stable \
               --build=outdated
           \""""
 
           sh """docker exec ${container_name} ${custom_sh} -c \"
-            conan install boost_filesystem/1.66.0@bincrafters/stable \
+            conan install boost_filesystem/1.65.1@bincrafters/stable \
               --options boost_filesystem:shared=True \
+              --build=outdated
+          \""""
+          
+          sh """docker exec ${container_name} ${custom_sh} -c \"
+            conan install boost_system/1.65.1@bincrafters/stable \
+              --options boost_system:shared=True \
               --build=outdated
           \""""
 
@@ -189,13 +195,18 @@ def get_macos_pipeline() {
               --options gtest:shared=True \
               --build=outdated"
 
-          sh "conan install cmake_findboost_modular/1.66.0@bincrafters/stable \
+          sh "conan install cmake_findboost_modular/1.65.1@bincrafters/stable \
               --settings build_type=Release \
               --build=outdated"
 
-          sh "conan install boost_filesystem/1.66.0@bincrafters/stable \
+          sh "conan install boost_filesystem/1.65.1@bincrafters/stable \
               --settings build_type=Release \
               --options boost_filesystem:shared=True \
+              --build=outdated"
+          
+          sh "conan install boost_system/1.65.1@bincrafters/stable \
+              --settings build_type=Release \
+              --options boost_system:shared=True \
               --build=outdated"
           
           sh "conan install cli11/1.3.0@bincrafters/stable \
