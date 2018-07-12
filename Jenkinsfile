@@ -93,14 +93,38 @@ def get_pipeline(image_key) {
           \""""
 
           sh """docker exec ${container_name} ${custom_sh} -c \"
+            conan install boost_date_time/1.65.1@bincrafters/stable \
+              --options boost_filesystem:shared=True \
+              --build=outdated
+          \""""
+
+          sh """docker exec ${container_name} ${custom_sh} -c \"
             conan install boost_filesystem/1.65.1@bincrafters/stable \
               --options boost_filesystem:shared=True \
               --build=outdated
           \""""
-          
+
+          sh """docker exec ${container_name} ${custom_sh} -c \"
+            conan install boost_log/1.65.1@bincrafters/stable \
+              --options boost_filesystem:shared=True \
+              --build=outdated
+          \""""
+
           sh """docker exec ${container_name} ${custom_sh} -c \"
             conan install boost_system/1.65.1@bincrafters/stable \
               --options boost_system:shared=True \
+              --build=outdated
+          \""""
+
+          sh """docker exec ${container_name} ${custom_sh} -c \"
+            conan install boost_thread/1.65.1@bincrafters/stable \
+              --options boost_filesystem:shared=True \
+              --build=outdated
+          \""""
+
+          sh """docker exec ${container_name} ${custom_sh} -c \"
+            conan install boost_timer/1.65.1@bincrafters/stable \
+              --options boost_filesystem:shared=True \
               --build=outdated
           \""""
 
