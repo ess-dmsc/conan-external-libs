@@ -134,7 +134,7 @@ def get_pipeline(image_key) {
           \""""
           
           sh """docker exec ${container_name} ${custom_sh} -c \"
-            conan install cli11/1.3.0@bincrafters/stable \
+            conan install cli11/1.5.3@bincrafters/stable \
               --build=outdated
           \""""
 
@@ -233,7 +233,7 @@ def get_macos_pipeline() {
               --options boost_system:shared=True \
               --build=outdated"
           
-          sh "conan install cli11/1.3.0@bincrafters/stable \
+          sh "conan install cli11/1.5.3@bincrafters/stable \
               --settings build_type=Release \
               --build=outdated"
         }  // stage
