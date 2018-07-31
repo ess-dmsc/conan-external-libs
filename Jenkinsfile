@@ -267,8 +267,7 @@ def get_win10_pipeline(){
               variable: 'CONAN_PASSWORD'
             )
           ]) {
-            conan user --password '${CONAN_PASSWORD}' --remote ${conan_remote} ${conan_user}
-            """
+            bat "conan user --password '${CONAN_PASSWORD}' --remote ${conan_remote} ${conan_user}"
           }  // withCredentials
         }  // stage
 
