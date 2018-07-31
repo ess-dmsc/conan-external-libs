@@ -255,12 +255,67 @@ def get_windows_pipeline(){
     node(windows){
       cleanWs()
       dir("${project}") {
+
         stage("windows10: Checkout") {
           checkout scm
         }  // stage
-        stage("windows10: Conan setup") {}  // stage
-        stage("windows10: Package") {}  // stage
-        stage("windows10: Upload" {}  // stage
+
+        stage("windows10: Conan setup") {
+        withCredentials([
+            string(
+              credentialsId: 'local-conan-server-password',
+              variable: 'CONAN_PASSWORD'
+            )
+          ]) {
+            bat """conan remote add --insert 0 ${conan_remote} ${local_conan_server}
+            conan user --password '${CONAN_PASSWORD}' --remote ${conan_remote} ${conan_user}
+            """
+          }  // withCredentials
+        }  // stage
+
+        stage("windows10: Package") {
+          bat "conan install zlib/1.2.11@conan/stable \
+              --settings build_type=Release \
+              --options zlib:shared=False \
+              --build=outdated"
+
+          bat "conan install zlib/1.2.11@conan/stable \
+              --settings build_type=Release \
+              --options zlib:shared=True \
+              --build=outdated"
+
+          bat "conan install gtest/1.8.0@conan/stable \
+              --settings build_type=Release \
+              --options gtest:shared=False \
+              --build=outdated"
+
+          bat "conan install gtest/1.8.0@conan/stable \
+              --settings build_type=Release \
+              --options gtest:shared=True \
+              --build=outdated"
+
+          bat "conan install cmake_findboost_modular/1.65.1@bincrafters/stable \
+              --settings build_type=Release \
+              --build=outdated"
+
+          bat "conan install boost_filesystem/1.65.1@bincrafters/stable \
+              --settings build_type=Release \
+              --options boost_filesystem:shared=True \
+              --build=outdated"
+          
+          bat "conan install boost_system/1.65.1@bincrafters/stable \
+              --settings build_type=Release \
+              --options boost_system:shared=True \
+              --build=outdated"
+          
+          bat "conan install cli11/1.5.3@bincrafters/stable \
+              --settings build_type=Release \
+              --build=outdated"
+        }  // stage
+
+        stage("windows10: Upload" {
+        	bat "conan upload --confirm --all --remote ${conan_remote} '*'"
+        }  // stage
 
       } // dir
     }  // node 
