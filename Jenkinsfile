@@ -245,11 +245,27 @@ def get_macos_pipeline() {
           sh "conan upload --confirm --all --remote ${conan_remote} \
             gtest/1.8.0@conan/stable"
         }
-      }
+      } // dir
     }  // node
   }  // return
 }  // def
 
+def get_windows_pipeline(){
+  return {
+    node(windows){
+      cleanWs()
+      dir("${project}") {
+        stage("windows10: Checkout") {
+          checkout scm
+        }  // stage
+        stage("windows10: Conan setup") {}  // stage
+        stage("windows10: Package") {}  // stage
+        stage("windows10: Upload" {}  // stage
+
+      } // dir
+    }  // node 
+  }  // return
+}  //def 
 
 node {
   checkout scm
