@@ -132,7 +132,7 @@ def get_pipeline(image_key) {
             conan install jsonformoderncpp/3.1.0@vthiery/stable \
               --build=outdated
           \""""
-          
+
           sh """docker exec ${container_name} ${custom_sh} -c \"
             conan install cli11/1.5.3@bincrafters/stable \
               --build=outdated
@@ -227,12 +227,12 @@ def get_macos_pipeline() {
               --settings build_type=Release \
               --options boost_filesystem:shared=True \
               --build=outdated"
-          
+
           sh "conan install boost_system/1.65.1@bincrafters/stable \
               --settings build_type=Release \
               --options boost_system:shared=True \
               --build=outdated"
-          
+
           sh "conan install cli11/1.5.3@bincrafters/stable \
               --settings build_type=Release \
               --build=outdated"
@@ -302,12 +302,12 @@ def get_windows_pipeline(){
               --settings build_type=Release \
               --options boost_filesystem:shared=True \
               --build=outdated"
-          
+
           bat "conan install boost_system/1.65.1@bincrafters/stable \
               --settings build_type=Release \
               --options boost_system:shared=True \
               --build=outdated"
-          
+
           bat "conan install cli11/1.5.3@bincrafters/stable \
               --settings build_type=Release \
               --build=outdated"
@@ -318,9 +318,9 @@ def get_windows_pipeline(){
         }  // stage
 
       } // dir
-    }  // node 
+    }  // node
   }  // return
-}  //def 
+}  //def
 
 node {
   checkout scm
@@ -331,6 +331,7 @@ node {
     builders[image_key] = get_pipeline(image_key)
   }
   builders['macOS'] = get_macos_pipeline()
+  builders['windows10'] = get_windows_pipeline()
   parallel builders
 
   // Delete workspace when build is done.
