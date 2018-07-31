@@ -260,17 +260,6 @@ def get_win10_pipeline(){
           checkout scm
         }  // stage
 
-        stage("windows10: Conan setup") {
-        withCredentials([
-            string(
-              credentialsId: 'local-conan-server-password',
-              variable: 'CONAN_PASSWORD'
-            )
-          ]) {
-            bat "conan user --password '${CONAN_PASSWORD}' --remote ${conan_remote} ${conan_user}"
-          }  // withCredentials
-        }  // stage
-
         stage("windows10: Package") {
           bat "conan install zlib/1.2.11@conan/stable \
               --settings build_type=Release \
