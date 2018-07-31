@@ -313,7 +313,7 @@ def get_windows_pipeline(){
               --build=outdated"
         }  // stage
 
-        stage("windows10: Upload" {
+        stage("windows10: Upload") {
         	bat "conan upload --confirm --all --remote ${conan_remote} '*'"
         }  // stage
 
