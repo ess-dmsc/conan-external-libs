@@ -317,6 +317,10 @@ def get_win10_pipeline(){
         	bat "conan upload --confirm --all --remote ${conan_remote} '*'"
         }  // stage
 
+        stage("windows10: Remove packages") {
+          bat "conan remove '*'"
+        }
+
       } // dir
     }  // node
   }  // return
