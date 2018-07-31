@@ -252,7 +252,7 @@ def get_macos_pipeline() {
 
 def get_win10_pipeline(){
   return {
-    node('windows'){
+    node('windows10'){
       cleanWs()
       dir("${project}") {
 
