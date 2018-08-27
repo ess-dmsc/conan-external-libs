@@ -87,7 +87,7 @@ def get_pipeline(image_key) {
               --build=outdated
           \""""
 
-          if (container_name != "centos7") {
+          if (image_key != "centos7") {
             sh """docker exec ${container_name} ${custom_sh} -c \"
               conan install cmake_findboost_modular/1.65.1@bincrafters/stable \
                 --build=outdated
