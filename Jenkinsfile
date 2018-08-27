@@ -87,46 +87,48 @@ def get_pipeline(image_key) {
               --build=outdated
           \""""
 
-          sh """docker exec ${container_name} ${custom_sh} -c \"
-            conan install cmake_findboost_modular/1.65.1@bincrafters/stable \
-              --build=outdated
-          \""""
+          if (container_name != "centos7") {
+            sh """docker exec ${container_name} ${custom_sh} -c \"
+              conan install cmake_findboost_modular/1.65.1@bincrafters/stable \
+                --build=outdated
+            \""""
 
-          sh """docker exec ${container_name} ${custom_sh} -c \"
-            conan install boost_date_time/1.65.1@bincrafters/stable \
-              --options boost_filesystem:shared=True \
-              --build=outdated
-          \""""
+            sh """docker exec ${container_name} ${custom_sh} -c \"
+              conan install boost_date_time/1.65.1@bincrafters/stable \
+                --options boost_filesystem:shared=True \
+                --build=outdated
+            \""""
 
-          sh """docker exec ${container_name} ${custom_sh} -c \"
-            conan install boost_filesystem/1.65.1@bincrafters/stable \
-              --options boost_filesystem:shared=True \
-              --build=outdated
-          \""""
+            sh """docker exec ${container_name} ${custom_sh} -c \"
+              conan install boost_filesystem/1.65.1@bincrafters/stable \
+                --options boost_filesystem:shared=True \
+                --build=outdated
+            \""""
 
-          sh """docker exec ${container_name} ${custom_sh} -c \"
-            conan install boost_log/1.65.1@bincrafters/stable \
-              --options boost_filesystem:shared=True \
-              --build=outdated
-          \""""
+            sh """docker exec ${container_name} ${custom_sh} -c \"
+              conan install boost_log/1.65.1@bincrafters/stable \
+                --options boost_filesystem:shared=True \
+                --build=outdated
+            \""""
 
-          sh """docker exec ${container_name} ${custom_sh} -c \"
-            conan install boost_system/1.65.1@bincrafters/stable \
-              --options boost_system:shared=True \
-              --build=outdated
-          \""""
+            sh """docker exec ${container_name} ${custom_sh} -c \"
+              conan install boost_system/1.65.1@bincrafters/stable \
+                --options boost_system:shared=True \
+                --build=outdated
+            \""""
 
-          sh """docker exec ${container_name} ${custom_sh} -c \"
-            conan install boost_thread/1.65.1@bincrafters/stable \
-              --options boost_filesystem:shared=True \
-              --build=outdated
-          \""""
+            sh """docker exec ${container_name} ${custom_sh} -c \"
+              conan install boost_thread/1.65.1@bincrafters/stable \
+                --options boost_filesystem:shared=True \
+                --build=outdated
+            \""""
 
-          sh """docker exec ${container_name} ${custom_sh} -c \"
-            conan install boost_timer/1.65.1@bincrafters/stable \
-              --options boost_filesystem:shared=True \
-              --build=outdated
-          \""""
+            sh """docker exec ${container_name} ${custom_sh} -c \"
+              conan install boost_timer/1.65.1@bincrafters/stable \
+                --options boost_filesystem:shared=True \
+                --build=outdated
+            \""""
+          }
 
           sh """docker exec ${container_name} ${custom_sh} -c \"
             conan install jsonformoderncpp/3.1.0@vthiery/stable \
@@ -155,49 +157,57 @@ def get_pipeline(image_key) {
           sh """docker exec ${container_name} ${custom_sh} -c \"
             conan install libcurl/7.56.1@bincrafters/stable \
               --settings build_type=Release \
-              --options libcurl:shared=True
+              --options libcurl:shared=True \
+              --build=outdated
           \""""
 
           sh """docker exec ${container_name} ${custom_sh} -c \"
             conan install libcurl/7.56.1@bincrafters/stable \
               --settings build_type=Release \
-              --options libcurl:shared=False
+              --options libcurl:shared=False \
+              --build=outdated
           \""""
 
           sh """docker exec ${container_name} ${custom_sh} -c \"
             conan install libcurl/7.56.1@bincrafters/stable \
               --settings build_type=Debug \
-              --options libcurl:shared=True
+              --options libcurl:shared=True \
+              --build=outdated
           \""""
 
           sh """docker exec ${container_name} ${custom_sh} -c \"
             conan install libcurl/7.56.1@bincrafters/stable \
               --settings build_type=Debug \
-              --options libcurl:shared=False
+              --options libcurl:shared=False \
+              --build=outdated
           \""""
 
           sh """docker exec ${container_name} ${custom_sh} -c \"
             conan install OpenSSL/1.0.2n@conan/stable \
               --settings build_type=Release \
-              --options OpenSSL:shared=True
+              --options OpenSSL:shared=True \
+              --build=outdated
           \""""
 
           sh """docker exec ${container_name} ${custom_sh} -c \"
             conan install OpenSSL/1.0.2n@conan/stable \
               --settings build_type=Release \
-              --options OpenSSL:shared=False
+              --options OpenSSL:shared=False \
+              --build=outdated
           \""""
 
           sh """docker exec ${container_name} ${custom_sh} -c \"
             conan install OpenSSL/1.0.2n@conan/stable \
               --settings build_type=Debug \
-              --options OpenSSL:shared=True
+              --options OpenSSL:shared=True \
+              --build=outdated
           \""""
 
           sh """docker exec ${container_name} ${custom_sh} -c \"
             conan install OpenSSL/1.0.2n@conan/stable \
               --settings build_type=Debug \
-              --options OpenSSL:shared=False
+              --options OpenSSL:shared=False \
+              --build=outdated
           \""""
 
           // There is only one cmake_installer package.
