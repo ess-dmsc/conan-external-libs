@@ -132,7 +132,7 @@ def get_pipeline(image_key) {
             conan install jsonformoderncpp/3.1.0@vthiery/stable \
               --build=outdated
           \""""
-          
+
           sh """docker exec ${container_name} ${custom_sh} -c \"
             conan install cli11/1.5.3@bincrafters/stable \
               --build=outdated
@@ -150,6 +150,54 @@ def get_pipeline(image_key) {
               --settings build_type=Release \
               --options gtest:shared=True \
               --build=outdated
+          \""""
+
+          sh """docker exec ${container_name} ${custom_sh} -c \"
+            conan install libcurl/7.56.1@bincrafters/stable \
+              --settings build_type=Release \
+              --options libcurl:shared=True
+          \""""
+
+          sh """docker exec ${container_name} ${custom_sh} -c \"
+            conan install libcurl/7.56.1@bincrafters/stable \
+              --settings build_type=Release \
+              --options libcurl:shared=False
+          \""""
+
+          sh """docker exec ${container_name} ${custom_sh} -c \"
+            conan install libcurl/7.56.1@bincrafters/stable \
+              --settings build_type=Debug \
+              --options libcurl:shared=True
+          \""""
+
+          sh """docker exec ${container_name} ${custom_sh} -c \"
+            conan install libcurl/7.56.1@bincrafters/stable \
+              --settings build_type=Debug \
+              --options libcurl:shared=False
+          \""""
+
+          sh """docker exec ${container_name} ${custom_sh} -c \"
+            conan install OpenSSL/1.0.2n@conan/stable \
+              --settings build_type=Release \
+              --options OpenSSL:shared=True
+          \""""
+
+          sh """docker exec ${container_name} ${custom_sh} -c \"
+            conan install OpenSSL/1.0.2n@conan/stable \
+              --settings build_type=Release \
+              --options OpenSSL:shared=False
+          \""""
+
+          sh """docker exec ${container_name} ${custom_sh} -c \"
+            conan install OpenSSL/1.0.2n@conan/stable \
+              --settings build_type=Debug \
+              --options OpenSSL:shared=True
+          \""""
+
+          sh """docker exec ${container_name} ${custom_sh} -c \"
+            conan install OpenSSL/1.0.2n@conan/stable \
+              --settings build_type=Debug \
+              --options OpenSSL:shared=False
           \""""
 
           // There is only one cmake_installer package.
@@ -227,15 +275,51 @@ def get_macos_pipeline() {
               --settings build_type=Release \
               --options boost_filesystem:shared=True \
               --build=outdated"
-          
+
           sh "conan install boost_system/1.65.1@bincrafters/stable \
               --settings build_type=Release \
               --options boost_system:shared=True \
               --build=outdated"
-          
+
           sh "conan install cli11/1.5.3@bincrafters/stable \
               --settings build_type=Release \
               --build=outdated"
+
+          sh "conan install libcurl/7.56.1@bincrafters/stable \
+              --settings build_type=Release \
+              --options libcurl:shared=True \
+              --options libcurl:darwin_ssl=False"
+
+          sh "conan install libcurl/7.56.1@bincrafters/stable \
+              --settings build_type=Release \
+              --options libcurl:shared=False \
+              --options libcurl:darwin_ssl=False"
+
+          sh "conan install libcurl/7.56.1@bincrafters/stable \
+              --settings build_type=Debug \
+              --options libcurl:shared=True \
+              --options libcurl:darwin_ssl=False"
+
+          sh "conan install libcurl/7.56.1@bincrafters/stable \
+              --settings build_type=Debug \
+              --options libcurl:shared=False \
+              --options libcurl:darwin_ssl=False"
+
+          sh "conan install OpenSSL/1.0.2n@conan/stable \
+              --settings build_type=Release \
+              --options OpenSSL:shared=True"
+
+          sh "conan install OpenSSL/1.0.2n@conan/stable \
+              --settings build_type=Release \
+              --options OpenSSL:shared=False"
+
+          sh "onan install OpenSSL/1.0.2n@conan/stable \
+              --settings build_type=Debug \
+              --options OpenSSL:shared=True"
+
+          sh "conan install OpenSSL/1.0.2n@conan/stable \
+              --settings build_type=Debug \
+              --options OpenSSL:shared=False"
         }  // stage
 
         stage("macOS: Upload") {
