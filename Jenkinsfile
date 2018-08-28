@@ -295,26 +295,6 @@ def get_macos_pipeline() {
               --settings build_type=Release \
               --build=outdated"
 
-          sh "conan install libcurl/7.56.1@bincrafters/stable \
-              --settings build_type=Release \
-              --options libcurl:shared=True \
-              --options libcurl:darwin_ssl=False"
-
-          sh "conan install libcurl/7.56.1@bincrafters/stable \
-              --settings build_type=Release \
-              --options libcurl:shared=False \
-              --options libcurl:darwin_ssl=False"
-
-          sh "conan install libcurl/7.56.1@bincrafters/stable \
-              --settings build_type=Debug \
-              --options libcurl:shared=True \
-              --options libcurl:darwin_ssl=False"
-
-          sh "conan install libcurl/7.56.1@bincrafters/stable \
-              --settings build_type=Debug \
-              --options libcurl:shared=False \
-              --options libcurl:darwin_ssl=False"
-
           sh "conan install OpenSSL/1.0.2n@conan/stable \
               --settings build_type=Release \
               --options OpenSSL:shared=True"
@@ -330,6 +310,30 @@ def get_macos_pipeline() {
           sh "conan install OpenSSL/1.0.2n@conan/stable \
               --settings build_type=Debug \
               --options OpenSSL:shared=False"
+
+          sh "conan install libcurl/7.56.1@bincrafters/stable \
+              --settings build_type=Release \
+              --options libcurl:shared=True \
+              --options libcurl:darwin_ssl=False \
+              --build zlib"
+
+          sh "conan install libcurl/7.56.1@bincrafters/stable \
+              --settings build_type=Release \
+              --options libcurl:shared=False \
+              --options libcurl:darwin_ssl=False \
+              --build zlib"
+
+          sh "conan install libcurl/7.56.1@bincrafters/stable \
+              --settings build_type=Debug \
+              --options libcurl:shared=True \
+              --options libcurl:darwin_ssl=False \
+              --build zlib"
+
+          sh "conan install libcurl/7.56.1@bincrafters/stable \
+              --settings build_type=Debug \
+              --options libcurl:shared=False \
+              --options libcurl:darwin_ssl=False \
+              --build zlib"
         }  // stage
 
         stage("macOS: Upload") {
