@@ -305,7 +305,7 @@ def get_macos_pipeline() {
               --options OpenSSL:shared=False \
               --build=outdated"
 
-          sh "onan install OpenSSL/1.0.2n@conan/stable \
+          sh "conan install OpenSSL/1.0.2n@conan/stable \
               --settings build_type=Debug \
               --options OpenSSL:shared=True \
               --build=outdated"
