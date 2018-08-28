@@ -223,6 +223,7 @@ def get_pipeline(image_key) {
 
         stage("${image_key}: Upload") {
           sh """docker exec ${container_name} ${custom_sh} -c \"
+            conan search '*'
             conan upload --confirm --all --remote ${conan_remote} '*'
           \""""
         }  // stage
