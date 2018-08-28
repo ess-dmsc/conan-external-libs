@@ -87,48 +87,41 @@ def get_pipeline(image_key) {
               --build=outdated
           \""""
 
-          if (image_key != "centos7") {
-            sh """docker exec ${container_name} ${custom_sh} -c \"
-              conan install cmake_findboost_modular/1.65.1@bincrafters/stable \
-                --build=outdated
-            \""""
+          sh """docker exec ${container_name} ${custom_sh} -c \"
+            conan install boost_date_time/1.65.1@bincrafters/stable \
+              --options boost_filesystem:shared=True \
+              --build=outdated
+          \""""
 
-            sh """docker exec ${container_name} ${custom_sh} -c \"
-              conan install boost_date_time/1.65.1@bincrafters/stable \
-                --options boost_filesystem:shared=True \
-                --build=outdated
-            \""""
+          sh """docker exec ${container_name} ${custom_sh} -c \"
+            conan install boost_filesystem/1.65.1@bincrafters/stable \
+              --options boost_filesystem:shared=True \
+              --build=outdated
+          \""""
 
-            sh """docker exec ${container_name} ${custom_sh} -c \"
-              conan install boost_filesystem/1.65.1@bincrafters/stable \
-                --options boost_filesystem:shared=True \
-                --build=outdated
-            \""""
+          sh """docker exec ${container_name} ${custom_sh} -c \"
+            conan install boost_log/1.65.1@bincrafters/stable \
+              --options boost_filesystem:shared=True \
+              --build=outdated
+          \""""
 
-            sh """docker exec ${container_name} ${custom_sh} -c \"
-              conan install boost_log/1.65.1@bincrafters/stable \
-                --options boost_filesystem:shared=True \
-                --build=outdated
-            \""""
+          sh """docker exec ${container_name} ${custom_sh} -c \"
+            conan install boost_system/1.65.1@bincrafters/stable \
+              --options boost_system:shared=True \
+              --build=outdated
+          \""""
 
-            sh """docker exec ${container_name} ${custom_sh} -c \"
-              conan install boost_system/1.65.1@bincrafters/stable \
-                --options boost_system:shared=True \
-                --build=outdated
-            \""""
+          sh """docker exec ${container_name} ${custom_sh} -c \"
+            conan install boost_thread/1.65.1@bincrafters/stable \
+              --options boost_filesystem:shared=True \
+              --build=outdated
+          \""""
 
-            sh """docker exec ${container_name} ${custom_sh} -c \"
-              conan install boost_thread/1.65.1@bincrafters/stable \
-                --options boost_filesystem:shared=True \
-                --build=outdated
-            \""""
-
-            sh """docker exec ${container_name} ${custom_sh} -c \"
-              conan install boost_timer/1.65.1@bincrafters/stable \
-                --options boost_filesystem:shared=True \
-                --build=outdated
-            \""""
-          }
+          sh """docker exec ${container_name} ${custom_sh} -c \"
+            conan install boost_timer/1.65.1@bincrafters/stable \
+              --options boost_filesystem:shared=True \
+              --build=outdated
+          \""""
 
           sh """docker exec ${container_name} ${custom_sh} -c \"
             conan install cli11/1.5.3@bincrafters/stable \
@@ -206,13 +199,17 @@ def get_pipeline(image_key) {
           \""""
 
           if (image_key == 'centos7') {
-            // There is only one cmake_installer package.
+            if (image_key != "centos7") {
+              sh """docker exec ${container_name} ${custom_sh} -c \"
+                conan install cmake_findboost_modular/1.65.1@bincrafters/stable \
+                  --build=outdated
+              \""""
+
             sh """docker exec ${container_name} ${custom_sh} -c \"
               conan install cmake_installer/3.10.0@conan/stable \
                 --build=outdated
             \""""
 
-            // Header-only package.
             sh """docker exec ${container_name} ${custom_sh} -c \"
               conan install jsonformoderncpp/3.1.0@vthiery/stable \
                 --build=outdated
