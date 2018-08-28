@@ -131,11 +131,6 @@ def get_pipeline(image_key) {
           }
 
           sh """docker exec ${container_name} ${custom_sh} -c \"
-            conan install jsonformoderncpp/3.1.0@vthiery/stable \
-              --build=outdated
-          \""""
-
-          sh """docker exec ${container_name} ${custom_sh} -c \"
             conan install cli11/1.5.3@bincrafters/stable \
               --build=outdated
           \""""
@@ -210,10 +205,16 @@ def get_pipeline(image_key) {
               --build=outdated
           \""""
 
-          // There is only one cmake_installer package.
           if (image_key == 'centos7') {
+            // There is only one cmake_installer package.
             sh """docker exec ${container_name} ${custom_sh} -c \"
               conan install cmake_installer/3.10.0@conan/stable \
+                --build=outdated
+            \""""
+
+            // Header-only package.
+            sh """docker exec ${container_name} ${custom_sh} -c \"
+              conan install jsonformoderncpp/3.1.0@vthiery/stable \
                 --build=outdated
             \""""
           }
