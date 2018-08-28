@@ -318,22 +318,26 @@ def get_macos_pipeline() {
           sh "conan install libcurl/7.56.1@bincrafters/stable \
               --settings build_type=Release \
               --options libcurl:shared=True \
-              --options libcurl:darwin_ssl=False"
+              --options libcurl:darwin_ssl=False \
+              --build=outdated"
 
           sh "conan install libcurl/7.56.1@bincrafters/stable \
               --settings build_type=Release \
               --options libcurl:shared=False \
-              --options libcurl:darwin_ssl=False"
+              --options libcurl:darwin_ssl=False \
+              --build=outdated"
 
           sh "conan install libcurl/7.56.1@bincrafters/stable \
               --settings build_type=Debug \
               --options libcurl:shared=True \
-              --options libcurl:darwin_ssl=False"
+              --options libcurl:darwin_ssl=False \
+              --build=outdated"
 
           sh "conan install libcurl/7.56.1@bincrafters/stable \
               --settings build_type=Debug \
               --options libcurl:shared=False \
-              --options libcurl:darwin_ssl=False"
+              --options libcurl:darwin_ssl=False \
+              --build=outdated"
         }  // stage
 
         stage("macOS: Upload") {
