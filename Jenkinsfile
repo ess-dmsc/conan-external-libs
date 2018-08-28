@@ -205,15 +205,16 @@ def get_pipeline(image_key) {
                   --build=outdated
               \""""
 
-            sh """docker exec ${container_name} ${custom_sh} -c \"
-              conan install cmake_installer/3.10.0@conan/stable \
-                --build=outdated
-            \""""
+              sh """docker exec ${container_name} ${custom_sh} -c \"
+                conan install cmake_installer/3.10.0@conan/stable \
+                  --build=outdated
+              \""""
 
-            sh """docker exec ${container_name} ${custom_sh} -c \"
-              conan install jsonformoderncpp/3.1.0@vthiery/stable \
-                --build=outdated
-            \""""
+              sh """docker exec ${container_name} ${custom_sh} -c \"
+                conan install jsonformoderncpp/3.1.0@vthiery/stable \
+                  --build=outdated
+              \""""
+            }
           }
         }  // stage
 
