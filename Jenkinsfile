@@ -297,43 +297,47 @@ def get_macos_pipeline() {
 
           sh "conan install OpenSSL/1.0.2n@conan/stable \
               --settings build_type=Release \
-              --options OpenSSL:shared=True"
+              --options OpenSSL:shared=True \
+              --build=outdated"
 
           sh "conan install OpenSSL/1.0.2n@conan/stable \
               --settings build_type=Release \
-              --options OpenSSL:shared=False"
+              --options OpenSSL:shared=False \
+              --build=outdated"
 
           sh "onan install OpenSSL/1.0.2n@conan/stable \
               --settings build_type=Debug \
-              --options OpenSSL:shared=True"
+              --options OpenSSL:shared=True \
+              --build=outdated"
 
           sh "conan install OpenSSL/1.0.2n@conan/stable \
               --settings build_type=Debug \
-              --options OpenSSL:shared=False"
+              --options OpenSSL:shared=False \
+              --build=outdated"
 
           sh "conan install libcurl/7.56.1@bincrafters/stable \
               --settings build_type=Release \
               --options libcurl:shared=True \
               --options libcurl:darwin_ssl=False \
-              --build missing"
+              --build=outdated"
 
           sh "conan install libcurl/7.56.1@bincrafters/stable \
               --settings build_type=Release \
               --options libcurl:shared=False \
               --options libcurl:darwin_ssl=False \
-              --build missing"
+              --build=outdated"
 
           sh "conan install libcurl/7.56.1@bincrafters/stable \
               --settings build_type=Debug \
               --options libcurl:shared=True \
               --options libcurl:darwin_ssl=False \
-              --build missing"
+              --build=outdated"
 
           sh "conan install libcurl/7.56.1@bincrafters/stable \
               --settings build_type=Debug \
               --options libcurl:shared=False \
               --options libcurl:darwin_ssl=False \
-              --build missing"
+              --build=outdated"
         }  // stage
 
         stage("macOS: Upload") {
