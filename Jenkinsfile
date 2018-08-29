@@ -218,6 +218,11 @@ def get_pipeline(image_key) {
               conan install jsonformoderncpp/3.1.0@vthiery/stable \
                 --build=outdated
             \""""
+          } else {
+            // Delete duplicate packages, as they can cause upload problems.
+            sh """docker exec ${container_name} ${custom_sh} -c \"
+              conan remove --force cmake_installer/3.10.0@conan/stable
+            \""""
           }
         }  // stage
 
