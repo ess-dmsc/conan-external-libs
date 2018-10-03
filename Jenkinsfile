@@ -199,6 +199,34 @@ def get_pipeline(image_key) {
               --options OpenSSL:shared=False \
               --build=outdated
           \""""
+          
+          sh """docker exec ${container_name} ${custom_sh} -c \"
+            conan install fmt/5.2.0@bincrafters/stable \
+              --settings build_type=Debug \
+              --options fmt:shared=True \
+              --build=outdated
+          \""""
+          
+          sh """docker exec ${container_name} ${custom_sh} -c \"
+            conan install fmt/5.2.0@bincrafters/stable \
+              --settings build_type=Release \
+              --options fmt:shared=True \
+              --build=outdated
+          \""""
+          
+          sh """docker exec ${container_name} ${custom_sh} -c \"
+            conan install fmt/5.2.0@bincrafters/stable \
+              --settings build_type=Debug \
+              --options fmt:shared=False \
+              --build=outdated
+          \""""
+          
+          sh """docker exec ${container_name} ${custom_sh} -c \"
+            conan install fmt/5.2.0@bincrafters/stable \
+              --settings build_type=Release \
+              --options fmt:shared=False \
+              --build=outdated
+          \""""
 
           if (image_key == 'centos7') {
             // There is only one cmake_findboost_modular package.
@@ -346,6 +374,27 @@ def get_macos_pipeline() {
               --options libcurl:shared=False \
               --options libcurl:darwin_ssl=False \
               --build=outdated"
+          
+          sh "conan install fmt/5.2.0@bincrafters/stable \
+              --settings build_type=Debug \
+              --options fmt:shared=True \
+              --build=outdated"
+          
+          sh "conan install fmt/5.2.0@bincrafters/stable \
+              --settings build_type=Release \
+              --options fmt:shared=True \
+              --build=outdated"
+          
+          sh "conan install fmt/5.2.0@bincrafters/stable \
+              --settings build_type=Debug \
+              --options fmt:shared=False \
+              --build=outdated"
+          
+          sh "conan install fmt/5.2.0@bincrafters/stable \
+              --settings build_type=Release \
+              --options fmt:shared=False \
+              --build=outdated"
+ 
         }  // stage
 
         stage("macOS: Upload") {
