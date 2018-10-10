@@ -227,6 +227,34 @@ def get_pipeline(image_key) {
               --options fmt:shared=False \
               --build=outdated
           \""""
+          
+          sh """docker exec ${container_name} ${custom_sh} -c \"
+            conan install spdlog/1.1.0@bincrafters/stable \
+              --settings build_type=Debug \
+              --options fmt:shared=True \
+              --build=outdated
+          \""""
+          
+          sh """docker exec ${container_name} ${custom_sh} -c \"
+            conan install spdlog/1.1.0@bincrafters/stable \
+              --settings build_type=Release \
+              --options fmt:shared=True \
+              --build=outdated
+          \""""
+          
+          sh """docker exec ${container_name} ${custom_sh} -c \"
+            conan install spdlog/1.1.0@bincrafters/stable \
+              --settings build_type=Debug \
+              --options fmt:shared=False \
+              --build=outdated
+          \""""
+          
+          sh """docker exec ${container_name} ${custom_sh} -c \"
+            conan install spdlog/1.1.0@bincrafters/stable \
+              --settings build_type=Release \
+              --options fmt:shared=False \
+              --build=outdated
+          \""""
 
           if (image_key == 'centos7') {
             // There is only one cmake_findboost_modular package.
@@ -391,6 +419,26 @@ def get_macos_pipeline() {
               --build=outdated"
           
           sh "conan install fmt/5.2.0@bincrafters/stable \
+              --settings build_type=Release \
+              --options fmt:shared=False \
+              --build=outdated"
+          
+          sh "conan install spdlog/1.1.0@bincrafters/stable \
+              --settings build_type=Debug \
+              --options fmt:shared=True \
+              --build=outdated"
+          
+          sh "conan install spdlog/1.1.0@bincrafters/stable \
+              --settings build_type=Release \
+              --options fmt:shared=True \
+              --build=outdated"
+          
+          sh "conan install spdlog/1.1.0@bincrafters/stable \
+              --settings build_type=Debug \
+              --options fmt:shared=False \
+              --build=outdated"
+          
+          sh "conan install spdlog/1.1.0@bincrafters/stable \
               --settings build_type=Release \
               --options fmt:shared=False \
               --build=outdated"
