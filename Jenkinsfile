@@ -114,6 +114,16 @@ def get_pipeline(image_key) {
           \""""
 
           sh """docker exec ${container_name} ${custom_sh} -c \"
+            conan install boost_asio/1.65.1@bincrafters/stable\
+              --build=outdated
+          \""""
+
+          sh """docker exec ${container_name} ${custom_sh} -c \"
+            conan install boost_property_tree/1.65.1@bincrafters/stable\
+              --build=outdated
+          \""""
+
+          sh """docker exec ${container_name} ${custom_sh} -c \"
             conan install boost_thread/1.65.1@bincrafters/stable \
               --options boost_thread:shared=True \
               --build=outdated
