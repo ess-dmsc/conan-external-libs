@@ -108,14 +108,14 @@ def get_pipeline(image_key) {
           }
 
           sh """docker exec ${container_name} ${custom_sh} -c \"
-            conan install boost_system/1.65.1@bincrafters/stable \
-              --options boost_system:shared=True \
+            conan install boost_program_options/1.65.1@bincrafters/stable\
+              --options boost_program_options:shared=True \
               --build=outdated
           \""""
 
           sh """docker exec ${container_name} ${custom_sh} -c \"
             conan install boost_thread/1.65.1@bincrafters/stable \
-              --options boost_filesboost_threadystem:shared=True \
+              --options boost_thread:shared=True \
               --build=outdated
           \""""
 
