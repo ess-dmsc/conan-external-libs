@@ -5,7 +5,7 @@ conan_user = "ess-dmsc"
 
 images = [
   'centos7': [
-    'name': 'essdmscdm/centos7-build-node:3.1.0',
+    'name': 'essdmscdm/centos7-build-node:3.4.0',
     'sh': '/usr/bin/scl enable devtoolset-6 -- /bin/bash -e'
   ],
   'debian9': [
