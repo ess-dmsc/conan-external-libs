@@ -98,11 +98,14 @@ def get_pipeline(image_key) {
               --build=outdated
           \""""
 
-          sh """docker exec ${container_name} ${custom_sh} -c \"
-            conan install boost_log/1.65.1@bincrafters/stable \
-              --options boost_filesystem:shared=True \
-              --build=outdated
-          \""""
+          // boost_log 1.65.1 does not build on CentOS because of boost_python.
+          if (image_key != 'centos7') {
+            sh """docker exec ${container_name} ${custom_sh} -c \"
+              conan install boost_log/1.65.1@bincrafters/stable \
+                --options boost_filesystem:shared=True \
+                --build=outdated
+            \""""
+          }
 
           sh """docker exec ${container_name} ${custom_sh} -c \"
             conan install boost_system/1.65.1@bincrafters/stable \
