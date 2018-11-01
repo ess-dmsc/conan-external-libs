@@ -89,7 +89,6 @@ def get_pipeline(image_key) {
 
           sh """docker exec ${container_name} ${custom_sh} -c \"
             conan install boost_date_time/1.65.1@bincrafters/stable \
-              --options boost_date_time:shared=True \
               --build=outdated
           \""""
 
