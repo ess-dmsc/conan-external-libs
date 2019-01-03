@@ -5,15 +5,15 @@ conan_user = "ess-dmsc"
 
 images = [
   'centos7': [
-    'name': 'essdmscdm/centos7-build-node:3.5.1',
+    'name': 'essdmscdm/centos7-build-node:3.4.0',
     'sh': '/usr/bin/scl enable devtoolset-6 -- /bin/bash -e'
   ],
   'debian9': [
-    'name': 'essdmscdm/debian9-build-node:2.5.2',
+    'name': 'essdmscdm/debian9-build-node:2.1.0',
     'sh': 'bash -e'
   ],
   'ubuntu1804': [
-    'name': 'essdmscdm/ubuntu18.04-build-node:1.3.1',
+    'name': 'essdmscdm/ubuntu18.04-build-node:1.1.0',
     'sh': 'bash -e'
   ]
 ]
@@ -88,79 +88,74 @@ def get_pipeline(image_key) {
           \""""
 
           sh """docker exec ${container_name} ${custom_sh} -c \"
-            conan install boost_date_time/1.69.0@bincrafters/stable \
+            conan install boost_date_time/1.65.1@bincrafters/stable \
               --build=outdated
           \""""
 
           sh """docker exec ${container_name} ${custom_sh} -c \"
-            conan install boost_filesystem/1.69.0@bincrafters/stable \
+            conan install boost_filesystem/1.65.1@bincrafters/stable \
               --options boost_filesystem:shared=True \
               --build=outdated
           \""""
 
-          // boost_log 1.69.0 does not build on CentOS because of boost_python.
+          // boost_log 1.65.1 does not build on CentOS because of boost_python.
           if (image_key != 'centos7') {
             sh """docker exec ${container_name} ${custom_sh} -c \"
-              conan install boost_log/1.69.0@bincrafters/stable \
+              conan install boost_log/1.65.1@bincrafters/stable \
                 --options boost_filesystem:shared=True \
                 --build=outdated
             \""""
           }
 
           sh """docker exec ${container_name} ${custom_sh} -c \"
-            conan install boost_program_options/1.69.0@bincrafters/stable\
+            conan install boost_program_options/1.65.1@bincrafters/stable\
               --options boost_program_options:shared=True \
               --build=outdated
           \""""
 
           sh """docker exec ${container_name} ${custom_sh} -c \"
-            conan install boost_asio/1.69.0@bincrafters/stable\
+            conan install boost_asio/1.65.1@bincrafters/stable\
               --build=outdated
           \""""
 
           sh """docker exec ${container_name} ${custom_sh} -c \"
-            conan install boost_property_tree/1.69.0@bincrafters/stable\
+            conan install boost_property_tree/1.65.1@bincrafters/stable\
               --build=outdated
           \""""
 
           sh """docker exec ${container_name} ${custom_sh} -c \"
-            conan install boost_thread/1.69.0@bincrafters/stable \
+            conan install boost_thread/1.65.1@bincrafters/stable \
               --options boost_thread:shared=True \
               --build=outdated
           \""""
 
           sh """docker exec ${container_name} ${custom_sh} -c \"
-            conan install boost_timer/1.69.0@bincrafters/stable \
+            conan install boost_timer/1.65.1@bincrafters/stable \
               --options boost_timer:shared=True \
               --build=outdated
           \""""
 
           sh """docker exec ${container_name} ${custom_sh} -c \"
-            conan install boost_atomic/1.69.0@bincrafters/stable \
+            conan install boost_atomic/1.65.1@bincrafters/stable \
               --options boost_atomic:shared=True \
               --build=outdated
           \""""
 
           sh """docker exec ${container_name} ${custom_sh} -c \"
-            conan install boost_container/1.69.0@bincrafters/stable \
+            conan install boost_container/1.65.1@bincrafters/stable \
               --options boost_container:shared=True \
               --build=outdated
           \""""
 
           sh """docker exec ${container_name} ${custom_sh} -c \"
-            conan install boost_exception/1.69.0@bincrafters/stable \
+            conan install boost_exception/1.65.1@bincrafters/stable \
               --options boost_exception:shared=True \
               --build=outdated
           \""""
 
           sh """docker exec ${container_name} ${custom_sh} -c \"
-            conan install boost_chrono/1.69.0@bincrafters/stable \
+            conan install boost_chrono/1.65.1@bincrafters/stable \
               --options boost_chrono:shared=True \
-              --build=outdated
-          \""""
-          
-          sh """docker exec ${container_name} ${custom_sh} -c \"
-            conan install boost_dll/1.69.0@bincrafters/stable \
               --build=outdated
           \""""
 
@@ -298,7 +293,7 @@ def get_pipeline(image_key) {
           if (image_key == 'centos7') {
             // There is only one cmake_findboost_modular package.
             sh """docker exec ${container_name} ${custom_sh} -c \"
-              conan install cmake_findboost_modular/1.69.0@bincrafters/stable \
+              conan install cmake_findboost_modular/1.65.1@bincrafters/stable \
                 --build=outdated
             \""""
 
@@ -380,22 +375,18 @@ def get_macos_pipeline() {
               --options gtest:shared=True \
               --build=outdated"
 
-          sh "conan install cmake_findboost_modular/1.69.0@bincrafters/stable \
+          sh "conan install cmake_findboost_modular/1.65.1@bincrafters/stable \
               --settings build_type=Release \
               --build=outdated"
 
-          sh "conan install boost_filesystem/1.69.0@bincrafters/stable \
+          sh "conan install boost_filesystem/1.65.1@bincrafters/stable \
               --settings build_type=Release \
               --options boost_filesystem:shared=True \
               --build=outdated"
 
-          sh "conan install boost_system/1.69.0@bincrafters/stable \
+          sh "conan install boost_system/1.65.1@bincrafters/stable \
               --settings build_type=Release \
               --options boost_system:shared=True \
-              --build=outdated"
-          
-          sh "conan install boost_dll/1.69.0@bincrafters/stable \
-              --settings build_type=Release \
               --build=outdated"
 
           sh "conan install cli11/1.5.3@bincrafters/stable \
