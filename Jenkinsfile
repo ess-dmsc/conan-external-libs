@@ -219,7 +219,7 @@ def get_macos_pipeline() {
 node {
   checkout scm
 
-  if (!env.CHANGE_ID)) {
+  if (!env.CHANGE_ID) {
     def builders = [:]
     for (x in images.keySet()) {
       def image_key = x
