@@ -219,13 +219,15 @@ def get_macos_pipeline() {
 node {
   checkout scm
 
-  def builders = [:]
-  for (x in images.keySet()) {
-    def image_key = x
-    builders[image_key] = get_pipeline(image_key)
+  if (!env.CHANGE_ID)) {
+    def builders = [:]
+    for (x in images.keySet()) {
+      def image_key = x
+      builders[image_key] = get_pipeline(image_key)
+    }
+    builders['macOS'] = get_macos_pipeline()
+    parallel builders
   }
-  builders['macOS'] = get_macos_pipeline()
-  parallel builders
 
   // Delete workspace when build is done.
   cleanWs()
