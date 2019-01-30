@@ -1,0 +1,16 @@
+[requires]
+zlib/1.2.11@conan/stable
+asio/1.12.0@bincrafters/stable
+cli11/1.6.0@bincrafters/stable
+gtest/1.8.0@conan/stable
+OpenSSL/1.0.2n@conan/stable
+fmt/5.2.0@bincrafters/stable
+spdlog/1.1.0@bincrafters/stable
+libpcap/1.8.1@bincrafters/stable
+
+[options]
+zlib:shared=True
+gtest:shared=True
+libcurl:shared=True
+OpenSSL:shared=True
+fmt:shared=True

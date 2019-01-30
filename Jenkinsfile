@@ -5,15 +5,15 @@ conan_user = "ess-dmsc"
 
 images = [
   'centos7': [
-    'name': 'essdmscdm/centos7-build-node:3.4.0',
+    'name': 'essdmscdm/centos7-build-node:3.5.1',
     'sh': '/usr/bin/scl enable devtoolset-6 -- /bin/bash -e'
   ],
   'debian9': [
-    'name': 'essdmscdm/debian9-build-node:2.1.0',
+    'name': 'essdmscdm/debian9-build-node:2.5.2',
     'sh': 'bash -e'
   ],
   'ubuntu1804': [
-    'name': 'essdmscdm/ubuntu18.04-build-node:1.1.0',
+    'name': 'essdmscdm/ubuntu18.04-build-node:1.3.1',
     'sh': 'bash -e'
   ]
 ]
@@ -68,99 +68,16 @@ def get_pipeline(image_key) {
         }  // stage
 
         stage("${image_key}: Package") {
+
           sh """docker exec ${container_name} ${custom_sh} -c \"
-            conan install zlib/1.2.11@conan/stable \
+            conan install ${project}/conanfile.txt \
               --settings build_type=Release \
-              --options zlib:shared=False \
               --build=outdated
           \""""
 
           sh """docker exec ${container_name} ${custom_sh} -c \"
-            conan install zlib/1.2.11@conan/stable \
+            conan install ${project}/conanfile_boost.txt \
               --settings build_type=Release \
-              --options zlib:shared=True \
-              --build=outdated
-          \""""
-
-          sh """docker exec ${container_name} ${custom_sh} -c \"
-            conan install asio/1.11.0@bincrafters/stable \
-              --build=outdated
-          \""""
-
-          sh """docker exec ${container_name} ${custom_sh} -c \"
-            conan install boost_date_time/1.65.1@bincrafters/stable \
-              --build=outdated
-          \""""
-
-          sh """docker exec ${container_name} ${custom_sh} -c \"
-            conan install boost_filesystem/1.65.1@bincrafters/stable \
-              --options boost_filesystem:shared=True \
-              --build=outdated
-          \""""
-
-          // boost_log 1.65.1 does not build on CentOS because of boost_python.
-          if (image_key != 'centos7') {
-            sh """docker exec ${container_name} ${custom_sh} -c \"
-              conan install boost_log/1.65.1@bincrafters/stable \
-                --options boost_filesystem:shared=True \
-                --build=outdated
-            \""""
-          }
-
-          sh """docker exec ${container_name} ${custom_sh} -c \"
-            conan install boost_program_options/1.65.1@bincrafters/stable\
-              --options boost_program_options:shared=True \
-              --build=outdated
-          \""""
-
-          sh """docker exec ${container_name} ${custom_sh} -c \"
-            conan install boost_asio/1.65.1@bincrafters/stable\
-              --build=outdated
-          \""""
-
-          sh """docker exec ${container_name} ${custom_sh} -c \"
-            conan install boost_property_tree/1.65.1@bincrafters/stable\
-              --build=outdated
-          \""""
-
-          sh """docker exec ${container_name} ${custom_sh} -c \"
-            conan install boost_thread/1.65.1@bincrafters/stable \
-              --options boost_thread:shared=True \
-              --build=outdated
-          \""""
-
-          sh """docker exec ${container_name} ${custom_sh} -c \"
-            conan install boost_timer/1.65.1@bincrafters/stable \
-              --options boost_timer:shared=True \
-              --build=outdated
-          \""""
-
-          sh """docker exec ${container_name} ${custom_sh} -c \"
-            conan install boost_atomic/1.65.1@bincrafters/stable \
-              --options boost_atomic:shared=True \
-              --build=outdated
-          \""""
-
-          sh """docker exec ${container_name} ${custom_sh} -c \"
-            conan install boost_container/1.65.1@bincrafters/stable \
-              --options boost_container:shared=True \
-              --build=outdated
-          \""""
-
-          sh """docker exec ${container_name} ${custom_sh} -c \"
-            conan install boost_exception/1.65.1@bincrafters/stable \
-              --options boost_exception:shared=True \
-              --build=outdated
-          \""""
-
-          sh """docker exec ${container_name} ${custom_sh} -c \"
-            conan install boost_chrono/1.65.1@bincrafters/stable \
-              --options boost_chrono:shared=True \
-              --build=outdated
-          \""""
-
-          sh """docker exec ${container_name} ${custom_sh} -c \"
-            conan install cli11/1.5.3@bincrafters/stable \
               --build=outdated
           \""""
 
@@ -172,13 +89,6 @@ def get_pipeline(image_key) {
           \""""
 
           sh """docker exec ${container_name} ${custom_sh} -c \"
-            conan install gtest/1.8.0@conan/stable \
-              --settings build_type=Release \
-              --options gtest:shared=True \
-              --build=outdated
-          \""""
-
-          sh """docker exec ${container_name} ${custom_sh} -c \"
             conan install libcurl/7.56.1@bincrafters/stable \
               --settings build_type=Release \
               --options libcurl:shared=True \
@@ -193,27 +103,6 @@ def get_pipeline(image_key) {
           \""""
 
           sh """docker exec ${container_name} ${custom_sh} -c \"
-            conan install libcurl/7.56.1@bincrafters/stable \
-              --settings build_type=Debug \
-              --options libcurl:shared=True \
-              --build=outdated
-          \""""
-
-          sh """docker exec ${container_name} ${custom_sh} -c \"
-            conan install libcurl/7.56.1@bincrafters/stable \
-              --settings build_type=Debug \
-              --options libcurl:shared=False \
-              --build=outdated
-          \""""
-
-          sh """docker exec ${container_name} ${custom_sh} -c \"
-            conan install OpenSSL/1.0.2n@conan/stable \
-              --settings build_type=Release \
-              --options OpenSSL:shared=True \
-              --build=outdated
-          \""""
-
-          sh """docker exec ${container_name} ${custom_sh} -c \"
             conan install OpenSSL/1.0.2n@conan/stable \
               --settings build_type=Release \
               --options OpenSSL:shared=False \
@@ -221,70 +110,7 @@ def get_pipeline(image_key) {
           \""""
 
           sh """docker exec ${container_name} ${custom_sh} -c \"
-            conan install OpenSSL/1.0.2n@conan/stable \
-              --settings build_type=Debug \
-              --options OpenSSL:shared=True \
-              --build=outdated
-          \""""
-
-          sh """docker exec ${container_name} ${custom_sh} -c \"
-            conan install OpenSSL/1.0.2n@conan/stable \
-              --settings build_type=Debug \
-              --options OpenSSL:shared=False \
-              --build=outdated
-          \""""
-
-          sh """docker exec ${container_name} ${custom_sh} -c \"
             conan install fmt/5.2.0@bincrafters/stable \
-              --settings build_type=Debug \
-              --options fmt:shared=True \
-              --build=outdated
-          \""""
-
-          sh """docker exec ${container_name} ${custom_sh} -c \"
-            conan install fmt/5.2.0@bincrafters/stable \
-              --settings build_type=Release \
-              --options fmt:shared=True \
-              --build=outdated
-          \""""
-
-          sh """docker exec ${container_name} ${custom_sh} -c \"
-            conan install fmt/5.2.0@bincrafters/stable \
-              --settings build_type=Debug \
-              --options fmt:shared=False \
-              --build=outdated
-          \""""
-
-          sh """docker exec ${container_name} ${custom_sh} -c \"
-            conan install fmt/5.2.0@bincrafters/stable \
-              --settings build_type=Release \
-              --options fmt:shared=False \
-              --build=outdated
-          \""""
-
-          sh """docker exec ${container_name} ${custom_sh} -c \"
-            conan install spdlog/1.1.0@bincrafters/stable \
-              --settings build_type=Debug \
-              --options fmt:shared=True \
-              --build=outdated
-          \""""
-
-          sh """docker exec ${container_name} ${custom_sh} -c \"
-            conan install spdlog/1.1.0@bincrafters/stable \
-              --settings build_type=Release \
-              --options fmt:shared=True \
-              --build=outdated
-          \""""
-
-          sh """docker exec ${container_name} ${custom_sh} -c \"
-            conan install spdlog/1.1.0@bincrafters/stable \
-              --settings build_type=Debug \
-              --options fmt:shared=False \
-              --build=outdated
-          \""""
-
-          sh """docker exec ${container_name} ${custom_sh} -c \"
-            conan install spdlog/1.1.0@bincrafters/stable \
               --settings build_type=Release \
               --options fmt:shared=False \
               --build=outdated
@@ -309,6 +135,13 @@ def get_pipeline(image_key) {
                 --build=outdated
             \""""
           } else {
+            // boost_log 1.65.1 does not build on CentOS because of boost_python.
+            sh """docker exec ${container_name} ${custom_sh} -c \"
+              conan install boost_log/1.65.1@bincrafters/stable \
+                --options boost_filesystem:shared=True \
+                --build=outdated
+            \""""
+
             // Delete duplicate packages, as they can cause upload problems.
             sh """docker exec ${container_name} ${custom_sh} -c \"
               conan remove --force cmake_installer/3.10.0@conan/stable
@@ -355,62 +188,8 @@ def get_macos_pipeline() {
         }  // stage
 
         stage("macOS: Package") {
-          sh "conan install zlib/1.2.11@conan/stable \
+          sh "conan install conanfile.txt \
               --settings build_type=Release \
-              --options zlib:shared=False \
-              --build=outdated"
-
-          sh "conan install zlib/1.2.11@conan/stable \
-              --settings build_type=Release \
-              --options zlib:shared=True \
-              --build=outdated"
-
-          sh "conan install gtest/1.8.0@conan/stable \
-              --settings build_type=Release \
-              --options gtest:shared=False \
-              --build=outdated"
-
-          sh "conan install gtest/1.8.0@conan/stable \
-              --settings build_type=Release \
-              --options gtest:shared=True \
-              --build=outdated"
-
-          sh "conan install cmake_findboost_modular/1.65.1@bincrafters/stable \
-              --settings build_type=Release \
-              --build=outdated"
-
-          sh "conan install boost_filesystem/1.65.1@bincrafters/stable \
-              --settings build_type=Release \
-              --options boost_filesystem:shared=True \
-              --build=outdated"
-
-          sh "conan install boost_system/1.65.1@bincrafters/stable \
-              --settings build_type=Release \
-              --options boost_system:shared=True \
-              --build=outdated"
-
-          sh "conan install cli11/1.5.3@bincrafters/stable \
-              --settings build_type=Release \
-              --build=outdated"
-
-          sh "conan install OpenSSL/1.0.2n@conan/stable \
-              --settings build_type=Release \
-              --options OpenSSL:shared=True \
-              --build=outdated"
-
-          sh "conan install OpenSSL/1.0.2n@conan/stable \
-              --settings build_type=Release \
-              --options OpenSSL:shared=False \
-              --build=outdated"
-
-          sh "conan install OpenSSL/1.0.2n@conan/stable \
-              --settings build_type=Debug \
-              --options OpenSSL:shared=True \
-              --build=outdated"
-
-          sh "conan install OpenSSL/1.0.2n@conan/stable \
-              --settings build_type=Debug \
-              --options OpenSSL:shared=False \
               --build=outdated"
 
           sh "conan install libcurl/7.56.1@bincrafters/stable \
@@ -423,68 +202,13 @@ def get_macos_pipeline() {
               --settings build_type=Release \
               --options libcurl:shared=False \
               --options libcurl:darwin_ssl=False \
-              --build=outdated"
-
-          sh "conan install libcurl/7.56.1@bincrafters/stable \
-              --settings build_type=Debug \
-              --options libcurl:shared=True \
-              --options libcurl:darwin_ssl=False \
-              --build=outdated"
-
-          sh "conan install libcurl/7.56.1@bincrafters/stable \
-              --settings build_type=Debug \
-              --options libcurl:shared=False \
-              --options libcurl:darwin_ssl=False \
-              --build=outdated"
-
-          sh "conan install fmt/5.2.0@bincrafters/stable \
-              --settings build_type=Debug \
-              --options fmt:shared=True \
-              --build=outdated"
-
-          sh "conan install fmt/5.2.0@bincrafters/stable \
-              --settings build_type=Release \
-              --options fmt:shared=True \
-              --build=outdated"
-
-          sh "conan install fmt/5.2.0@bincrafters/stable \
-              --settings build_type=Debug \
-              --options fmt:shared=False \
-              --build=outdated"
-
-          sh "conan install fmt/5.2.0@bincrafters/stable \
-              --settings build_type=Release \
-              --options fmt:shared=False \
-              --build=outdated"
-
-          sh "conan install spdlog/1.1.0@bincrafters/stable \
-              --settings build_type=Debug \
-              --options fmt:shared=True \
-              --build=outdated"
-
-          sh "conan install spdlog/1.1.0@bincrafters/stable \
-              --settings build_type=Release \
-              --options fmt:shared=True \
-              --build=outdated"
-
-          sh "conan install spdlog/1.1.0@bincrafters/stable \
-              --settings build_type=Debug \
-              --options fmt:shared=False \
-              --build=outdated"
-
-          sh "conan install spdlog/1.1.0@bincrafters/stable \
-              --settings build_type=Release \
-              --options fmt:shared=False \
               --build=outdated"
 
         }  // stage
 
         stage("macOS: Upload") {
-          sh "conan upload --confirm --all --remote ${conan_remote} \
-            zlib/1.2.11@conan/stable"
-
-          sh "conan upload --confirm --all --remote ${conan_remote} \
-            gtest/1.8.0@conan/stable"
+          sh "conan search '*'"
+          sh "conan upload --confirm --all --remote ${conan_remote} '*'"
         }
       }
     }  // node
@@ -495,13 +219,15 @@ def get_macos_pipeline() {
 node {
   checkout scm
 
-  def builders = [:]
-  for (x in images.keySet()) {
-    def image_key = x
-    builders[image_key] = get_pipeline(image_key)
+  if (!env.CHANGE_ID) {
+    def builders = [:]
+    for (x in images.keySet()) {
+      def image_key = x
+      builders[image_key] = get_pipeline(image_key)
+    }
+    builders['macOS'] = get_macos_pipeline()
+    parallel builders
   }
-  builders['macOS'] = get_macos_pipeline()
-  parallel builders
 
   // Delete workspace when build is done.
   cleanWs()
