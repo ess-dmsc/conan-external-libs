@@ -76,6 +76,12 @@ def get_pipeline(image_key) {
           \""""
 
           sh """docker exec ${container_name} ${custom_sh} -c \"
+            conan install ${project}/conanfile_boost.txt \
+              --settings build_type=Release \
+              --build=outdated
+          \""""
+
+          sh """docker exec ${container_name} ${custom_sh} -c \"
             conan install gtest/1.8.0@conan/stable \
               --settings build_type=Release \
               --options gtest:shared=False \
