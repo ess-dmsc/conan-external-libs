@@ -70,7 +70,7 @@ def get_pipeline(image_key) {
         stage("${image_key}: Package") {
 
           sh """docker exec ${container_name} ${custom_sh} -c \"
-            conan install conanfile.txt \
+            conan install ${project}/conanfile.txt \
               --settings build_type=Release \
               --build=outdated
           \""""
