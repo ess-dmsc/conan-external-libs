@@ -201,8 +201,8 @@ def get_macos_pipeline() {
         }  // stage
 
         stage("macOS: Upload") {
-          sh "conan search '*'
-              conan upload --confirm --all --remote ${conan_remote} '*'"
+          sh "conan search '*'"
+          sh "conan upload --confirm --all --remote ${conan_remote} '*'"
         }
       }
     }  // node
