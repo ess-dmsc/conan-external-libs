@@ -119,7 +119,7 @@ def get_pipeline(image_key) {
           h """docker exec ${container_name} ${custom_sh} -c \"
             conan install zlib/1.2.11@conan/stable \
               --settings build_type=Release \
-              --options fmt:shared=False \
+              --options zlib:shared=False \
               --build=outdated
           \""""
 
