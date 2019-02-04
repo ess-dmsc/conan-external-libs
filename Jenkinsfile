@@ -116,6 +116,13 @@ def get_pipeline(image_key) {
               --build=outdated
           \""""
 
+          h """docker exec ${container_name} ${custom_sh} -c \"
+            conan install zlib/1.2.11@conan/stable \
+              --settings build_type=Release \
+              --options fmt:shared=False \
+              --build=outdated
+          \""""
+
           if (image_key == 'centos7') {
             // There is only one cmake_findboost_modular package.
             sh """docker exec ${container_name} ${custom_sh} -c \"
