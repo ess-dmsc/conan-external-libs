@@ -15,6 +15,10 @@ images = [
   'ubuntu1804': [
     'name': 'essdmscdm/ubuntu18.04-build-node:1.4.0',
     'sh': 'bash -e'
+  ],
+  'alpine': [
+    'name': 'screamingudder/alpine-build-node:1.0.0',
+    'sh': 'bash -e'
   ]
 ]
 
