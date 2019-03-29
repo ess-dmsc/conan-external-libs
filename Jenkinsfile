@@ -17,7 +17,7 @@ images = [
     'sh': 'bash -e'
   ],
   'alpine': [
-    'name': 'screamingudder/alpine-build-node:1.0.0',
+    'name': 'screamingudder/alpine-build-node:1.3.0',
     'sh': 'bash -e'
   ]
 ]
