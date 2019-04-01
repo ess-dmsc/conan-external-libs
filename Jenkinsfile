@@ -78,6 +78,13 @@ def get_pipeline(image_key) {
               --settings build_type=Release \
               --build=outdated
           \""""
+          
+          // force boost_build to build before any other boost package
+          // workaround for this bug: https://github.com/bincrafters/community/issues/705
+          sh """docker exec ${container_name} ${custom_sh} -c \"
+            conan install boost_build/1.69.0@bincrafters/stable \
+              --build
+          \""""
 
           sh """docker exec ${container_name} ${custom_sh} -c \"
             conan install ${project}/conanfile_boost.txt \
