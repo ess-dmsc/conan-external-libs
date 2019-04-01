@@ -79,11 +79,15 @@ def get_pipeline(image_key) {
               --build=outdated
           \""""
 
-          sh """docker exec ${container_name} ${custom_sh} -c \"
-            conan install ${project}/conanfile_boost.txt \
-              --settings build_type=Release \
-              --build=outdated
-          \""""
+          // There is a problem with the boost packages on alpine until we can update
+          // to boost 1.67 or above
+          if (image_key != "alpine") {
+            sh """docker exec ${container_name} ${custom_sh} -c \"
+              conan install ${project}/conanfile_boost.txt \
+                --settings build_type=Release \
+                --build=outdated
+            \""""
+          }
 
           sh """docker exec ${container_name} ${custom_sh} -c \"
             conan install gtest/1.8.0@conan/stable \
