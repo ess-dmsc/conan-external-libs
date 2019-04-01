@@ -81,7 +81,7 @@ def get_pipeline(image_key) {
 
           // There is a problem with the boost packages on alpine until we can update
           // to boost 1.67 or above
-          if (image_key != "alpine") {
+          if (image_key != 'alpine') {
             sh """docker exec ${container_name} ${custom_sh} -c \"
               conan install ${project}/conanfile_boost.txt \
                 --settings build_type=Release \
@@ -150,12 +150,16 @@ def get_pipeline(image_key) {
                 --build=outdated
             \""""
           } else {
-            // boost_log 1.65.1 does not build on CentOS because of boost_python.
-            sh """docker exec ${container_name} ${custom_sh} -c \"
-              conan install boost_log/1.65.1@bincrafters/stable \
-                --options boost_filesystem:shared=True \
-                --build=outdated
-            \""""
+            // There is a problem with the boost packages on alpine until we can update
+            // to boost 1.67 or above
+            if (image_key != 'alpine') {
+              // boost_log 1.65.1 does not build on CentOS because of boost_python.
+              sh """docker exec ${container_name} ${custom_sh} -c \"
+                conan install boost_log/1.65.1@bincrafters/stable \
+                  --options boost_filesystem:shared=True \
+                  --build=outdated
+              \""""
+            }
 
             // Delete duplicate packages, as they can cause upload problems.
             sh """docker exec ${container_name} ${custom_sh} -c \"
