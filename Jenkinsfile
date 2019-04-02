@@ -133,7 +133,7 @@ def get_pipeline(image_key) {
           if (image_key == 'centos7') {
             // There is only one cmake_findboost_modular package.
             sh """docker exec ${container_name} ${custom_sh} -c \"
-              conan install cmake_findboost_modular/1.65.1@bincrafters/stable \
+              conan install cmake_findboost_modular/1.69.0@bincrafters/stable \
                 --build=outdated
             \""""
 
@@ -150,7 +150,7 @@ def get_pipeline(image_key) {
             \""""
           } else {
             sh """docker exec ${container_name} ${custom_sh} -c \"
-              conan install boost_log/1.65.1@bincrafters/stable \
+              conan install boost_log/1.69.0@bincrafters/stable \
                 --options shared=True \
                 --build=outdated
             \""""
