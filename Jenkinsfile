@@ -79,15 +79,14 @@ def get_pipeline(image_key) {
               --build=outdated
           \""""
 
-          // There is a problem with the boost packages on alpine until we can update
-          // to boost 1.67 or above
-          if (image_key != 'alpine') {
-            sh """docker exec ${container_name} ${custom_sh} -c \"
-              conan install ${project}/conanfile_boost.txt \
-                --settings build_type=Release \
-                --build=outdated
-            \""""
-          }
+          // Note, we explicitly rebuild boost_build because the packaged version
+          // is built against glibc, but on alpine it needs to be built against musl
+          sh """docker exec ${container_name} ${custom_sh} -c \"
+            conan install ${project}/conanfile_boost.txt \
+              --settings build_type=Release \
+              --build=outdated \
+              --build=boost_build
+          \""""
 
           sh """docker exec ${container_name} ${custom_sh} -c \"
             conan install gtest/1.8.0@conan/stable \
@@ -134,7 +133,7 @@ def get_pipeline(image_key) {
           if (image_key == 'centos7') {
             // There is only one cmake_findboost_modular package.
             sh """docker exec ${container_name} ${custom_sh} -c \"
-              conan install cmake_findboost_modular/1.65.1@bincrafters/stable \
+              conan install cmake_findboost_modular/1.69.0@bincrafters/stable \
                 --build=outdated
             \""""
 
@@ -150,16 +149,11 @@ def get_pipeline(image_key) {
                 --build=outdated
             \""""
           } else {
-            // There is a problem with the boost packages on alpine until we can update
-            // to boost 1.67 or above
-            if (image_key != 'alpine') {
-              // boost_log 1.65.1 does not build on CentOS because of boost_python.
-              sh """docker exec ${container_name} ${custom_sh} -c \"
-                conan install boost_log/1.65.1@bincrafters/stable \
-                  --options boost_filesystem:shared=True \
-                  --build=outdated
-              \""""
-            }
+            sh """docker exec ${container_name} ${custom_sh} -c \"
+              conan install boost_log/1.69.0@bincrafters/stable \
+                --options shared=True \
+                --build=outdated
+            \""""
 
             // Delete duplicate packages, as they can cause upload problems.
             sh """docker exec ${container_name} ${custom_sh} -c \"
