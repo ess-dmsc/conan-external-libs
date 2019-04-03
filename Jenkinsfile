@@ -158,6 +158,7 @@ def get_pipeline(image_key) {
             // Delete duplicate packages, as they can cause upload problems.
             sh """docker exec ${container_name} ${custom_sh} -c \"
               conan remove --force cmake_installer/3.10.0@conan/stable
+              conan remove --force boost_build/1.69.0@bincrafters/stable
             \""""
           }
         }  // stage
