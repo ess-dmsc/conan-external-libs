@@ -5,15 +5,15 @@ conan_user = "ess-dmsc"
 
 images = [
   'centos7': [
-    'name': 'essdmscdm/centos7-build-node:4.6.0',
+    'name': 'screamingudder/centos7-build-node:4.6.0',
     'sh': '/usr/bin/scl enable devtoolset-6 -- /bin/bash -e'
   ],
   'debian9': [
-    'name': 'essdmscdm/debian9-build-node:3.4.0',
+    'name': 'screamingudder/debian9-build-node:3.4.0',
     'sh': 'bash -e'
   ],
   'ubuntu1804': [
-    'name': 'essdmscdm/ubuntu18.04-build-node:2.5.0',
+    'name': 'screamingudder/ubuntu18.04-build-node:2.5.0',
     'sh': 'bash -e'
   ],
   'alpine': [
