@@ -79,15 +79,6 @@ def get_pipeline(image_key) {
               --build=outdated
           \""""
 
-          // Note, we explicitly rebuild boost_build because the packaged version
-          // is built against glibc, but on alpine it needs to be built against musl
-          sh """docker exec ${container_name} ${custom_sh} -c \"
-            conan install ${project}/conanfile_boost.txt \
-              --settings build_type=Release \
-              --build=outdated \
-              --build=boost_build
-          \""""
-
           sh """docker exec ${container_name} ${custom_sh} -c \"
             conan install gtest/1.8.0@conan/stable \
               --settings build_type=Release \
@@ -147,11 +138,6 @@ def get_pipeline(image_key) {
               conan install boost_log/1.69.0@bincrafters/stable \
                 --options shared=True \
                 --build=outdated
-            \""""
-
-            // Delete duplicate packages, as they can cause upload problems.
-            sh """docker exec ${container_name} ${custom_sh} -c \"
-              conan remove --force boost_build/1.69.0@bincrafters/stable
             \""""
           }
         }  // stage
