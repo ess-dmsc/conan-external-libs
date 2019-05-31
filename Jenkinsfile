@@ -137,12 +137,6 @@ def get_pipeline(image_key) {
                 --build=outdated
             \""""
 
-            // There is only one cmake_installer package.
-            sh """docker exec ${container_name} ${custom_sh} -c \"
-              conan install cmake_installer/3.10.0@conan/stable \
-                --build=outdated
-            \""""
-
             // Header-only package.
             sh """docker exec ${container_name} ${custom_sh} -c \"
               conan install jsonformoderncpp/3.1.0@vthiery/stable \
@@ -157,7 +151,6 @@ def get_pipeline(image_key) {
 
             // Delete duplicate packages, as they can cause upload problems.
             sh """docker exec ${container_name} ${custom_sh} -c \"
-              conan remove --force cmake_installer/3.10.0@conan/stable
               conan remove --force boost_build/1.69.0@bincrafters/stable
             \""""
           }
