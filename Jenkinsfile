@@ -1,160 +1,116 @@
+@Library('ecdc-pipeline')
+import ecdcpipeline.ContainerBuildNode
+import ecdcpipeline.PipelineBuilder
+
 project = "conan-external-libs"
 
 conan_remote = "ess-dmsc-local"
 conan_user = "ess-dmsc"
 
-images = [
-  'centos7': [
-    'name': 'screamingudder/centos7-build-node:4.6.0',
-    'sh': '/usr/bin/scl enable devtoolset-6 -- /bin/bash -e'
-  ],
-  'debian9': [
-    'name': 'screamingudder/debian9-build-node:3.4.0',
-    'sh': 'bash -e'
-  ],
-  'ubuntu1804': [
-    'name': 'screamingudder/ubuntu18.04-build-node:2.5.0',
-    'sh': 'bash -e'
-  ],
-  'alpine': [
-    'name': 'screamingudder/alpine-build-node:1.6.0',
-    'sh': 'bash -e'
-  ]
+container_build_nodes = [
+  'centos7': ContainerBuildNode.getDefaultContainerBuildNode('centos7'),
+  'alpine': ContainerBuildNode.getDefaultContainerBuildNode('alpine'),
+  'debian9': ContainerBuildNode.getDefaultContainerBuildNode('debian9'),
+  'ubuntu1804': ContainerBuildNode.getDefaultContainerBuildNode('ubuntu1804')
 ]
 
-base_container_name = "${project}-${env.BRANCH_NAME}-${env.BUILD_NUMBER}"
+pipeline_builder = new PipelineBuilder(this, container_build_nodes)
 
-def get_pipeline(image_key) {
-  return {
-    node('docker') {
-      def container_name = "${base_container_name}-${image_key}"
-      try {
-        def image = docker.image(images[image_key]['name'])
-        def custom_sh = images[image_key]['sh']
-        def container = image.run("\
-          --name ${container_name} \
-          --tty \
-          --cpus=2 \
-          --memory=4GB \
-          --network=host \
-          --env http_proxy=${env.http_proxy} \
-          --env https_proxy=${env.https_proxy} \
-          --env local_conan_server=${env.local_conan_server} \
-        ")
+builders = pipeline_builder.createBuilders { container ->
 
-        stage("${image_key}: Checkout") {
-          sh """docker exec ${container_name} ${custom_sh} -c \"
-            git clone \
-              --branch ${env.BRANCH_NAME} \
-              https://github.com/ess-dmsc/${project}.git
-          \""""
-        }  // stage
+    pipeline_builder.stage("${container.key}: checkout") {
+        dir(pipeline_builder.project) {
+            scm_vars = checkout scm
+        }
+        // Copy source code to container
+        container.copyTo(pipeline_builder.project, pipeline_builder.project)
+    }  // stage
 
-        stage("${image_key}: Conan setup") {
-          withCredentials([
-            string(
-              credentialsId: 'local-conan-server-password',
-              variable: 'CONAN_PASSWORD'
-            )
-          ]) {
-            sh """docker exec ${container_name} ${custom_sh} -c \"
-              set +x
-              conan remote add \
-                --insert 0 \
-                ${conan_remote} ${local_conan_server}
-              conan user \
-                --password '${CONAN_PASSWORD}' \
-                --remote ${conan_remote} \
-                ${conan_user} \
-                > /dev/null
-            \""""
-          }  // withCredentials
-        }  // stage
-
-        stage("${image_key}: Package") {
-
-          sh """docker exec ${container_name} ${custom_sh} -c \"
+    pipeline_builder.stage("${container.key}: get dependencies") {
+        container.sh """
+            mkdir build
+            cd build
+            conan remote add --insert 0 ess-dmsc-local ${local_conan_server}
+        """
+    }  // stage
+  
+    pipeline_builder.stage("${container.key}: package") {
+        container.sh """
             conan install ${project}/conanfile.txt \
               --settings build_type=Release \
               --build=outdated
-          \""""
-
-          sh """docker exec ${container_name} ${custom_sh} -c \"
+          """
+      
+        container.sh """
             conan install gtest/1.8.0@conan/stable \
               --settings build_type=Release \
               --options gtest:shared=False \
               --build=outdated
-          \""""
+          """
 
-          sh """docker exec ${container_name} ${custom_sh} -c \"
-            conan install libcurl/7.56.1@bincrafters/stable \
-              --settings build_type=Release \
-              --options libcurl:shared=True \
+        container.sh """
+          conan install libcurl/7.56.1@bincrafters/stable \
+            --settings build_type=Release \
+            --options libcurl:shared=True \
+            --build=outdated
+        """
+
+        container.sh """
+          conan install libcurl/7.56.1@bincrafters/stable \
+            --settings build_type=Release \
+            --options libcurl:shared=False \
+            --build=outdated
+        """
+
+        container.sh """
+          conan install OpenSSL/1.0.2n@conan/stable \
+            --settings build_type=Release \
+            --options OpenSSL:shared=False \
+            --build=outdated
+        """
+
+        container.sh """
+          conan install fmt/5.2.0@bincrafters/stable \
+            --settings build_type=Release \
+            --options fmt:shared=False \
+            --build=outdated
+        """
+
+        container.sh """
+          conan install zlib/1.2.11@conan/stable \
+            --settings build_type=Release \
+            --options zlib:shared=False \
+            --build=outdated
+        """
+
+        if (container.key == 'centos7') {
+          // There is only one cmake_findboost_modular package.
+          container.sh """
+            conan install cmake_findboost_modular/1.69.0@bincrafters/stable \
               --build=outdated
-          \""""
+          """
 
-          sh """docker exec ${container_name} ${custom_sh} -c \"
-            conan install libcurl/7.56.1@bincrafters/stable \
-              --settings build_type=Release \
-              --options libcurl:shared=False \
+          // Header-only package.
+          container.sh """
+            conan install jsonformoderncpp/3.1.0@vthiery/stable \
               --build=outdated
-          \""""
-
-          sh """docker exec ${container_name} ${custom_sh} -c \"
-            conan install OpenSSL/1.0.2n@conan/stable \
-              --settings build_type=Release \
-              --options OpenSSL:shared=False \
+          """
+        } else {
+          container.sh """
+            conan install boost_log/1.69.0@bincrafters/stable \
+              --options shared=True \
               --build=outdated
-          \""""
+          """
+        }
+    }  // stage
 
-          sh """docker exec ${container_name} ${custom_sh} -c \"
-            conan install fmt/5.2.0@bincrafters/stable \
-              --settings build_type=Release \
-              --options fmt:shared=False \
-              --build=outdated
-          \""""
-
-          sh """docker exec ${container_name} ${custom_sh} -c \"
-            conan install zlib/1.2.11@conan/stable \
-              --settings build_type=Release \
-              --options zlib:shared=False \
-              --build=outdated
-          \""""
-
-          if (image_key == 'centos7') {
-            // There is only one cmake_findboost_modular package.
-            sh """docker exec ${container_name} ${custom_sh} -c \"
-              conan install cmake_findboost_modular/1.69.0@bincrafters/stable \
-                --build=outdated
-            \""""
-
-            // Header-only package.
-            sh """docker exec ${container_name} ${custom_sh} -c \"
-              conan install jsonformoderncpp/3.1.0@vthiery/stable \
-                --build=outdated
-            \""""
-          } else {
-            sh """docker exec ${container_name} ${custom_sh} -c \"
-              conan install boost_log/1.69.0@bincrafters/stable \
-                --options shared=True \
-                --build=outdated
-            \""""
-          }
-        }  // stage
-
-        stage("${image_key}: Upload") {
-          sh """docker exec ${container_name} ${custom_sh} -c \"
+    pipeline_builder.stage("${container.key}: Upload") {
+        container.sh """
             conan search '*'
             conan upload --confirm --all --remote ${conan_remote} '*'
-          \""""
-        }  // stage
-      } finally {
-        sh "docker stop ${container_name}"
-        sh "docker rm -f ${container_name}"
-      }  // finally
-    }  // node
-  }  // return
-}  // def
+        """
+    }  // stage
+}
 
 def get_macos_pipeline() {
   return {
@@ -208,20 +164,27 @@ def get_macos_pipeline() {
   }  // return
 }  // def
 
+node('docker') {
+    cleanWs()
 
-node {
-  checkout scm
-
-  if (!env.CHANGE_ID) {
-    def builders = [:]
-    for (x in images.keySet()) {
-      def image_key = x
-      builders[image_key] = get_pipeline(image_key)
+    stage('Checkout') {
+        dir("${project}") {
+            try {
+                scm_vars = checkout scm
+            } catch (e) {
+                failure_function(e, 'Checkout failed')
+            }
+        }
     }
-    builders['macOS'] = get_macos_pipeline()
-    parallel builders
-  }
 
-  // Delete workspace when build is done.
-  cleanWs()
+    if (!env.CHANGE_ID) {
+        builders['macOS'] = get_macos_pipeline()
+
+        try {
+            parallel builders
+        } catch (e) {
+            pipeline_builder.handleFailureMessages()
+            throw e
+        }
+    }
 }
