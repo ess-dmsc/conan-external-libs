@@ -25,15 +25,28 @@ builders = pipeline_builder.createBuilders { container ->
         // Copy source code to container
         container.copyTo(pipeline_builder.project, pipeline_builder.project)
     }  // stage
-
-    pipeline_builder.stage("${container.key}: get dependencies") {
-        container.sh """
-            mkdir build
-            cd build
-            conan remote add --insert 0 ess-dmsc-local ${local_conan_server}
-        """
-    }  // stage
   
+    pipeline_builder.stage("${container.key}: Conan setup") {
+        withCredentials([
+            string(
+              credentialsId: 'local-conan-server-password',
+              variable: 'CONAN_PASSWORD'
+            )
+        ]) {
+            container.sh """
+              set +x
+              conan remote add \
+                --insert 0 \
+                ${conan_remote} ${local_conan_server}
+              conan user \
+                --password '${CONAN_PASSWORD}' \
+                --remote ${conan_remote} \
+                ${conan_user} \
+                > /dev/null
+            """
+        }  // withCredentials
+    }  // stage
+ 
     pipeline_builder.stage("${container.key}: package") {
         container.sh """
             conan install ${project}/conanfile.txt \
