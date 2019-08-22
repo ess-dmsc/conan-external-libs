@@ -25,7 +25,7 @@ builders = pipeline_builder.createBuilders { container ->
         // Copy source code to container
         container.copyTo(pipeline_builder.project, pipeline_builder.project)
     }  // stage
-  
+
     pipeline_builder.stage("${container.key}: Conan setup") {
         withCredentials([
             string(
@@ -46,18 +46,11 @@ builders = pipeline_builder.createBuilders { container ->
             """
         }  // withCredentials
     }  // stage
- 
+
     pipeline_builder.stage("${container.key}: package") {
         container.sh """
             conan install ${project}/conanfile.txt \
               --settings build_type=Release \
-              --build=outdated
-          """
-      
-        container.sh """
-            conan install gtest/1.8.0@conan/stable \
-              --settings build_type=Release \
-              --options gtest:shared=False \
               --build=outdated
           """
 
@@ -79,13 +72,6 @@ builders = pipeline_builder.createBuilders { container ->
           conan install OpenSSL/1.0.2n@conan/stable \
             --settings build_type=Release \
             --options OpenSSL:shared=False \
-            --build=outdated
-        """
-
-        container.sh """
-          conan install fmt/5.2.0@bincrafters/stable \
-            --settings build_type=Release \
-            --options fmt:shared=False \
             --build=outdated
         """
 

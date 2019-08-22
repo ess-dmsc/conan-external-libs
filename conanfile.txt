@@ -12,7 +12,6 @@ libssh2/1.8.0@bincrafters/stable
 
 [options]
 zlib:shared=True
-gtest:shared=True
+gtest:shared=False
 libcurl:shared=True
 OpenSSL:shared=True
-fmt:shared=True
