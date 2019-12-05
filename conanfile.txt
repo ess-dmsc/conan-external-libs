@@ -2,7 +2,7 @@
 asio/1.13.0@bincrafters/stable
 boost_filesystem/1.69.0@bincrafters/stable
 boost_system/1.69.0@bincrafters/stable
-CLI11/1.8.0@bincrafters/stable
+cli11/1.8.0@bincrafters/stable
 flatbuffers/1.10.0@google/stable
 fmt/5.3.0@bincrafters/stable
 gtest/1.8.1@bincrafters/stable
