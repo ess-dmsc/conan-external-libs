@@ -5,7 +5,7 @@ import ecdcpipeline.PipelineBuilder
 container_build_nodes = [
   'centos7': ContainerBuildNode.getDefaultContainerBuildNode('centos7-gcc8'),
   'debian10': ContainerBuildNode.getDefaultContainerBuildNode('debian10'),
-  'ubuntu1804': ContainerBuildNode.getDefaultContainerBuildNode('ubuntu1804-gcc8')
+  'ubuntu1804': ContainerBuildNode.getDefaultContainerBuildNode('ubuntu1804-gcc8'),
   'ubuntu2004': ContainerBuildNode.getDefaultContainerBuildNode('ubuntu2004')
 ]
 
