@@ -18,7 +18,7 @@ builders = pipeline_builder.createBuilders { container ->
     }
     // Copy source code to container
     container.copyTo(pipeline_builder.project, pipeline_builder.project)
-   // stage
+  }  // stage
 
   pipeline_builder.stage("${container.key}: Conan setup") {
     container.sh """
