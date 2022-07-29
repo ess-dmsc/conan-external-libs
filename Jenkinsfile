@@ -31,6 +31,12 @@ builders = pipeline_builder.createBuilders { container ->
 
   pipeline_builder.stage("${container.key}: build") {
     container.sh """
+      conan install boost_build/1.69.0@bincrafters/stable \
+        --build=boost_build \
+        --build=outdated
+    """
+
+    container.sh """
       conan install boost_filesystem/1.69.0@bincrafters/stable \
         --build=boost_filesystem \
         --build=outdated
