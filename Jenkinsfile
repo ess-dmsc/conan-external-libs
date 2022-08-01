@@ -21,14 +21,6 @@ builders = pipeline_builder.createBuilders { container ->
     container.copyTo(pipeline_builder.project, pipeline_builder.project)
   }  // stage
 
-  pipeline_builder.stage("${container.key}: Conan setup") {
-    container.sh """
-      conan remote add \
-        --insert 0 \
-        ess-dmsc-local ${local_conan_server}
-    """
-  }  // stage
-
   pipeline_builder.stage("${container.key}: build") {
     container.sh """
       conan install boost_build/1.69.0@bincrafters/stable \
